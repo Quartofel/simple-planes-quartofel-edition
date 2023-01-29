@@ -123,5 +123,7 @@ public class PlaneRenderer<T extends PlaneEntity> extends EntityRenderer<T> {
     }
 
     public static final Map<Block, ResourceLocation> cachedTextures = new HashMap<>();
+
+    //:eyes:
     public static final ResourceLocation FALLBACK_TEXTURE = new ResourceLocation("minecraft", "textures/block/oak_planks.png");
 }

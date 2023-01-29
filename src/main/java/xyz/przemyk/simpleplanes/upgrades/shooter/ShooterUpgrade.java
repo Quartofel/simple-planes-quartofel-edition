@@ -57,10 +57,16 @@ public class ShooterUpgrade extends Upgrade {
         ItemStack itemStack = itemStackHandler.getStackInSlot(0);
         Item item = itemStack.getItem();
 
+        ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompat.shooterBehaviour(item, itemStackHandler, level, player, motion, x, y, z));
+
+    }
+
+/*
         if (item == Items.FIREWORK_ROCKET) {
             FireworkRocketEntity fireworkrocketentity = new FireworkRocketEntity(level, itemStack, x, y, z, true);
             fireworkrocketentity.shoot(-motion.x, -motion.y, -motion.z, -(float) Math.max(0.5F, motion.length() * 1.5), 1.0F);
             level.addFreshEntity(fireworkrocketentity);
+            //ile amunicji zjeść
             if (!player.isCreative()) {
                 itemStackHandler.extractItem(0, 1, false);
             }
@@ -108,7 +114,7 @@ public class ShooterUpgrade extends Upgrade {
             ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompat.shooterBehaviour(item, itemStackHandler, level, player, motion, x, y, z));
         }
     }
-
+*/
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();
@@ -150,7 +156,7 @@ public class ShooterUpgrade extends Upgrade {
         planeEntity.spawnAtLocation(Items.DISPENSER);
         planeEntity.spawnAtLocation(itemStackHandler.getStackInSlot(0));
     }
-
+//tu mieszka amunicja
     @Override
     public void addContainerData(Function<Slot, Slot> addSlot, Function<DataSlot, DataSlot> addDataSlot) {
         addSlot.apply(new SlotItemHandler(itemStackHandler, 0, 134, 62));

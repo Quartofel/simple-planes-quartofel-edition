@@ -17,6 +17,7 @@ import xyz.przemyk.simpleplanes.setup.SimplePlanesItems;
 import xyz.przemyk.simpleplanes.setup.SimplePlanesUpgrades;
 import xyz.przemyk.simpleplanes.upgrades.UpgradeType;
 
+//numero tres in the grand pecking order
 public class HelicopterEntity extends LargePlaneEntity {
 
     public static final EntityDataAccessor<Boolean> MOVE_UP = SynchedEntityData.defineId(HelicopterEntity.class, EntityDataSerializers.BOOLEAN);
@@ -34,13 +35,13 @@ public class HelicopterEntity extends LargePlaneEntity {
     @Override
     protected TempMotionVars getMotionVars() {
         TempMotionVars motionTempMotionVars = super.getMotionVars();
-        motionTempMotionVars.passiveEnginePush = 0.028f;
-        motionTempMotionVars.push = 0.05f;
+        motionTempMotionVars.passiveEnginePush = 0.1f;
+        motionTempMotionVars.push = 0.015f;
         motionTempMotionVars.dragQuad *= 10;
         motionTempMotionVars.dragMul *= 2;
         return motionTempMotionVars;
     }
-
+/*
     @Override
     protected Vector3f getTickPush(TempMotionVars tempMotionVars) {
         if (tempMotionVars.moveForward < 0 && isPowered() && !entityData.get(MOVE_UP)) {
@@ -56,6 +57,13 @@ public class HelicopterEntity extends LargePlaneEntity {
         return transformPos(new Vector3f(0, tempMotionVars.push, 0));
     }
 
+*/
+    @Override
+    protected Vector3f getTickPush(TempMotionVars tempMotionVars) {
+        tempMotionVars.push *= getThrottle();
+        return transformPos(new Vector3f(0, tempMotionVars.push, 0));
+    }
+/*
     @Override
     protected void tickPitch(TempMotionVars tempMotionVars) {
         if (getHealth() <= 0) {
@@ -73,10 +81,11 @@ public class HelicopterEntity extends LargePlaneEntity {
             }
         }
     }
-
+*/
+/*
     @Override
     protected void tickYaw() {}
-
+*/
     @Override
     protected boolean tickOnGround(TempMotionVars tempMotionVars) {
         float push = tempMotionVars.push;
@@ -86,6 +95,7 @@ public class HelicopterEntity extends LargePlaneEntity {
         } else {
             tempMotionVars.push = 0;
         }
+
         return false;
     }
 
@@ -93,7 +103,6 @@ public class HelicopterEntity extends LargePlaneEntity {
     protected float getGroundPitch() {
         return 0;
     }
-
     @Override
     public int getFuelCost() {
         return SimplePlanesConfig.HELICOPTER_FUEL_COST.get();
@@ -103,7 +112,7 @@ public class HelicopterEntity extends LargePlaneEntity {
     protected Quaternion tickRotateMotion(TempMotionVars tempMotionVars, Quaternion q, Vec3 motion) {
         return q;
     }
-
+/*
     @Override
     protected void tickRoll(TempMotionVars tempMotionVars) {
         if (getHealth() <= 0) {
@@ -122,7 +131,7 @@ public class HelicopterEntity extends LargePlaneEntity {
             rotationRoll = MathUtil.lerpAngle(0.1f, rotationRoll, tempMotionVars.moveStrafing * 50);
         }
     }
-
+*/
     @Override
     public void positionRider(Entity passenger) {
         positionRiderGeneric(passenger);

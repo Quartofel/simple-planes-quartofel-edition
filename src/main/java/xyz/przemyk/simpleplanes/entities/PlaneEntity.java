@@ -67,6 +67,7 @@ import java.util.*;
 import static net.minecraft.util.Mth.wrapDegrees;
 import static xyz.przemyk.simpleplanes.misc.MathUtil.*;
 
+//numero uno in the grand pecking order
 @SuppressWarnings({"ConstantConditions", "deprecation"})
 public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
     public static final EntityDataAccessor<Integer> MAX_HEALTH = SynchedEntityData.defineId(PlaneEntity.class, EntityDataSerializers.INT);
@@ -188,6 +189,7 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
         return getItemStack();
     }
 
+    //stąd tekstury wyszli
     public void setMaterial(String material) {
         entityData.set(MATERIAL, material);
         Block block = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(material));
@@ -369,7 +371,10 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
             propellerRotationOld = propellerRotationNew;
             if (isPowered()) {
                 int throttle = getThrottle();
-                propellerRotationNew += throttle * 0.1;
+                if(getControllingPassenger() != null && getThrottle() == 0){
+                    propellerRotationNew += throttle + 0.2;
+                }
+                propellerRotationNew += throttle * 0.5;
             }
         }
 
@@ -1325,11 +1330,11 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
             moveForward = 0;
             turnThreshold = 0;
             moveStrafing = 0;
-            maxSpeed = 3;
-            takeOffSpeed = 0.3;
+            maxSpeed = 2;
+            takeOffSpeed = 0.8;
             maxLift = 2;
             liftFactor = 10;
-            gravity = -0.03;
+            gravity = -0.05;
             drag = 0.001;
             dragMul = 0.0005;
             dragQuad = 0.001;

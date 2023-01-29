@@ -22,7 +22,7 @@ import xyz.przemyk.simpleplanes.upgrades.payload.PayloadUpgrade;
 
 import java.util.List;
 import java.util.Optional;
-
+//numero dos in the grand pecking order
 public class LargePlaneEntity extends PlaneEntity {
 
     public boolean hasLargeUpgrade = false;
