@@ -5,6 +5,7 @@ import com.mojang.math.Vector3f;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.npc.Villager;
@@ -17,11 +18,12 @@ import xyz.przemyk.simpleplanes.setup.SimplePlanesItems;
 import xyz.przemyk.simpleplanes.setup.SimplePlanesUpgrades;
 import xyz.przemyk.simpleplanes.upgrades.UpgradeType;
 
+import static xyz.przemyk.simpleplanes.misc.MathUtil.lerpAngle;
+
 //numero tres in the grand pecking order
 public class HelicopterEntity extends LargePlaneEntity {
 
     public static final EntityDataAccessor<Boolean> MOVE_UP = SynchedEntityData.defineId(HelicopterEntity.class, EntityDataSerializers.BOOLEAN);
-
     public HelicopterEntity(EntityType<? extends HelicopterEntity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
     }
@@ -38,7 +40,11 @@ public class HelicopterEntity extends LargePlaneEntity {
         motionTempMotionVars.passiveEnginePush = 0.1f;
         motionTempMotionVars.push = 0.015f;
         motionTempMotionVars.dragQuad *= 10;
-        motionTempMotionVars.dragMul *= 2;
+        motionTempMotionVars.dragMul *= 3;
+        motionTempMotionVars.gravity = -0.1;
+        motionTempMotionVars.maxSpeed = 1;
+        motionTempMotionVars.maxLift = 2;
+        motionTempMotionVars.liftFactor = 10;
         return motionTempMotionVars;
     }
 /*
@@ -63,26 +69,41 @@ public class HelicopterEntity extends LargePlaneEntity {
         tempMotionVars.push *= getThrottle();
         return transformPos(new Vector3f(0, tempMotionVars.push, 0));
     }
-/*
+
     @Override
-    protected void tickPitch(TempMotionVars tempMotionVars) {
+    protected void tickRoll(TempMotionVars tempMotionVars) {
         if (getHealth() <= 0) {
             setXRot(-2);
             setDeltaMovement(getDeltaMovement().add(0, -0.04, 0));
-        } else if (!onGround) {
-            if (tempMotionVars.moveForward > 0) {
-                setXRot(Math.max(getXRot() - 1, -20));
-            } else if (tempMotionVars.moveForward < 0 && entityData.get(MOVE_UP)) {
-                setXRot(Math.min(getXRot() + 1, 20));
-            } else {
-                setXRot(MathUtil.lerpAngle(0.2f, getXRot(), 0));
-                double drag = 0.999;
-                setDeltaMovement(getDeltaMovement().multiply(drag, 1, drag));
-            }
         }
+
+        double turn = 0;
+
+        if (getOnGround() || isOnWater()) {
+            turn = tempMotionVars.moveStrafing > 0 ? 3 : tempMotionVars.moveStrafing == 0 ? 0 : -3;
+            rotationRoll = lerpAngle(0.1f, rotationRoll, 0);
+
+        } else {
+            if (tempMotionVars.moveStrafing > 0.0f) {
+                rollSpeed += 0.25f;
+            } else if (tempMotionVars.moveStrafing < 0.0f) {
+                rollSpeed -= 0.25f;
+            } else {
+                if (rollSpeed < 0) {
+                    rollSpeed += 0.2f;
+                } else if (rollSpeed > 0) {
+                    rollSpeed -= 0.2f;
+                }
+            }
+
+            rollSpeed = Mth.clamp(rollSpeed, -5.0f, 5.0f);
+            rotationRoll += rollSpeed;
+        }
+
+        setYRot((float) (getYRot() - turn));
     }
-*/
-/*
+
+    /*
     @Override
     protected void tickYaw() {}
 */
@@ -90,12 +111,14 @@ public class HelicopterEntity extends LargePlaneEntity {
     protected boolean tickOnGround(TempMotionVars tempMotionVars) {
         float push = tempMotionVars.push;
         super.tickOnGround(tempMotionVars);
+        /*
         if (entityData.get(MOVE_UP)) {
+
             tempMotionVars.push = push;
         } else {
             tempMotionVars.push = 0;
         }
-
+        */
         return false;
     }
 
@@ -190,4 +213,5 @@ public class HelicopterEntity extends LargePlaneEntity {
     public void setMoveUp(boolean up) {
         entityData.set(MOVE_UP, up);
     }
+
 }

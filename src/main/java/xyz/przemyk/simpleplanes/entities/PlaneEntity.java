@@ -58,6 +58,7 @@ import xyz.przemyk.simpleplanes.upgrades.UpgradeType;
 import xyz.przemyk.simpleplanes.upgrades.armor.ArmorUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.booster.BoosterUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.engines.EngineUpgrade;
+import xyz.przemyk.simpleplanes.upgrades.shooter.FireworkLauncherUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.shooter.ShooterUpgrade;
 
 import javax.annotation.Nonnull;
@@ -127,7 +128,7 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
         entityData.define(MAX_HEALTH, 10);
         entityData.define(HEALTH, 10);
         entityData.define(Q, Quaternion.ONE);
-        entityData.define(MAX_SPEED, 0.25f);
+        entityData.define(MAX_SPEED, 0.15f);
         entityData.define(MATERIAL, ForgeRegistries.BLOCKS.getKey(Blocks.OAK_PLANKS).toString());
         entityData.define(TIME_SINCE_HIT, 0);
         entityData.define(DAMAGE_TAKEN, 0f);
@@ -286,6 +287,12 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
         Entity entity = source.getDirectEntity();
         if (entity == getControllingPassenger() && entity instanceof Player player) {
             if (upgrades.get(SimplePlanesUpgrades.SHOOTER.getId()) instanceof ShooterUpgrade shooterUpgrade) {
+                shooterUpgrade.use(player);
+            }
+            else if (upgrades.get(SimplePlanesUpgrades.FIREWORK_SHOOTER.getId()) instanceof FireworkLauncherUpgrade shooterUpgrade) {
+                shooterUpgrade.use(player);
+            }
+            else if (upgrades.get(SimplePlanesUpgrades.FIREWORK_SHOOTER.getId()) instanceof FireworkLauncherUpgrade shooterUpgrade) {
                 shooterUpgrade.use(player);
             }
             return false;
@@ -787,7 +794,7 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
         double speed = getDeltaMovement().length();
         double lift = Math.min(speed * tempMotionVars.liftFactor, tempMotionVars.maxLift) * d;
         if (getHealth() <= 0) {
-            lift = 0;
+            lift *= 0.5;
         }
 //        double cosRoll = (1 + 4 * Math.max(Math.cos(Math.toRadians(degreesDifferenceAbs(rotationRoll, 0))), 0)) / 5;
 //        lift *= cosRoll;
@@ -1330,11 +1337,11 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
             moveForward = 0;
             turnThreshold = 0;
             moveStrafing = 0;
-            maxSpeed = 2;
-            takeOffSpeed = 0.8;
+            maxSpeed = 3;
+            takeOffSpeed = 0.3;
             maxLift = 2;
             liftFactor = 10;
-            gravity = -0.05;
+            gravity = -0.03;
             drag = 0.001;
             dragMul = 0.0005;
             dragQuad = 0.001;

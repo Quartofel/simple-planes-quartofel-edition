@@ -60,6 +60,8 @@ public class ClientEventHandler {
     public static KeyMapping pitchDown;
     public static KeyMapping yawRight;
     public static KeyMapping yawLeft;
+    public static KeyMapping rollRight;
+    public static KeyMapping rollLeft;
 
     static {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -85,7 +87,9 @@ public class ClientEventHandler {
         pitchUp = new KeyMapping("key.plane_pitch_up.desc", GLFW.GLFW_KEY_W, "key.simpleplanes.category");
         pitchDown = new KeyMapping("key.plane_pitch_down.desc", GLFW.GLFW_KEY_S, "key.simpleplanes.category");
         yawRight = new KeyMapping("key.plane_yaw_right.desc", GLFW.GLFW_KEY_RIGHT, "key.simpleplanes.category");
-        yawLeft = new KeyMapping("key.plane_yaw_left.desc", GLFW.GLFW_KEY_LEFT, "key.simpleplanes.category");
+        yawLeft = new KeyMapping("key.plane_yaw_left.desc", GLFW.GLFW_KEY_RIGHT, "key.simpleplanes.category");
+        //rollRight = new KeyMapping("key.plane_yaw_right.desc", GLFW.GLFW_KEY_RIGHT, "key.simpleplanes.category");
+        //rollLeft = new KeyMapping("key.plane_yaw_left.desc", GLFW.GLFW_KEY_LEFT, "key.simpleplanes.category");
         event.register(moveHeliUpKey);
         event.register(openPlaneInventoryKey);
         event.register(dropPayloadKey);
@@ -95,6 +99,8 @@ public class ClientEventHandler {
         event.register(pitchDown);
         event.register(yawRight);
         event.register(yawLeft);
+        //event.register(rollRight);
+        //event.register(rollLeft);
     }
 
     public static void registerHUDOverlay(RegisterGuiOverlaysEvent event) {
