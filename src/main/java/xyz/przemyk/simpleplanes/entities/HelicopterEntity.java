@@ -47,23 +47,7 @@ public class HelicopterEntity extends LargePlaneEntity {
         motionTempMotionVars.liftFactor = 10;
         return motionTempMotionVars;
     }
-/*
-    @Override
-    protected Vector3f getTickPush(TempMotionVars tempMotionVars) {
-        if (tempMotionVars.moveForward < 0 && isPowered() && !entityData.get(MOVE_UP)) {
-            tempMotionVars.push *= 0.2;
-        }
-        if (tempMotionVars.moveForward > 0 && isPowered() && !entityData.get(MOVE_UP)) {
-            tempMotionVars.push *= 1.5;
-        }
 
-        if (isPowered() && entityData.get(MOVE_UP) && tempMotionVars.moveForward >= 0) {
-            tempMotionVars.push += 0.01 * getThrottle();
-        }
-        return transformPos(new Vector3f(0, tempMotionVars.push, 0));
-    }
-
-*/
     @Override
     protected Vector3f getTickPush(TempMotionVars tempMotionVars) {
         tempMotionVars.push *= getThrottle();
@@ -103,22 +87,11 @@ public class HelicopterEntity extends LargePlaneEntity {
         setYRot((float) (getYRot() - turn));
     }
 
-    /*
-    @Override
-    protected void tickYaw() {}
-*/
     @Override
     protected boolean tickOnGround(TempMotionVars tempMotionVars) {
         float push = tempMotionVars.push;
         super.tickOnGround(tempMotionVars);
-        /*
-        if (entityData.get(MOVE_UP)) {
 
-            tempMotionVars.push = push;
-        } else {
-            tempMotionVars.push = 0;
-        }
-        */
         return false;
     }
 
@@ -135,26 +108,7 @@ public class HelicopterEntity extends LargePlaneEntity {
     protected Quaternion tickRotateMotion(TempMotionVars tempMotionVars, Quaternion q, Vec3 motion) {
         return q;
     }
-/*
-    @Override
-    protected void tickRoll(TempMotionVars tempMotionVars) {
-        if (getHealth() <= 0) {
-            setYRot(getYRot() + (getId() % 2 == 0 ? 16.0f : -16.0f));
-            return;
-        }
 
-        if (!entityData.get(MOVE_UP)) {
-            setYRot(getYRot() - tempMotionVars.moveStrafing * 2);
-            if (tempMotionVars.moveForward > 0 && !onGround) {
-                rotationRoll = MathUtil.lerpAngle(0.1f, rotationRoll, tempMotionVars.moveStrafing * 30);
-            } else {
-                rotationRoll = MathUtil.lerpAngle(0.1f, rotationRoll, 0);
-            }
-        } else if (!onGround) {
-            rotationRoll = MathUtil.lerpAngle(0.1f, rotationRoll, tempMotionVars.moveStrafing * 50);
-        }
-    }
-*/
     @Override
     public void positionRider(Entity passenger) {
         positionRiderGeneric(passenger);

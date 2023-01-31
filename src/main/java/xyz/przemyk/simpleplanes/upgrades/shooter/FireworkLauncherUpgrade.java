@@ -52,13 +52,22 @@ public class FireworkLauncherUpgrade extends Upgrade {
         Item item = itemStack.getItem();
 
         if (item == Items.FIREWORK_ROCKET) {
-            FireworkRocketEntity fireworkrocketentity = new FireworkRocketEntity(level, itemStack, x, y, z, true);
+            FireworkRocketEntity fireworkrocketentity = new FireworkRocketEntity(level, itemStack, x+1, y, z, true);
+
             fireworkrocketentity.shoot(-motion.x, -motion.y, -motion.z, -(float) Math.max(0.5F, motion.length() * 1.5), 1.0F);
+
             level.addFreshEntity(fireworkrocketentity);
             //ile amunicji zjeść
             if (!player.isCreative()) {
                 itemStackHandler.extractItem(0, 1, false);
+                itemStack = itemStackHandler.getStackInSlot(0);
+                if(itemStack != null){
+                    FireworkRocketEntity fireworkrocketentity2 = new FireworkRocketEntity(level, itemStack, x-1, y, z, true);
+                    fireworkrocketentity2.shoot(-motion.x, -motion.y, -motion.z, -(float) Math.max(0.5F, motion.length() * 1.5), 1.0F);
+                    level.addFreshEntity(fireworkrocketentity2);
+                }
             }
+
 
         }
 

@@ -37,6 +37,7 @@ import xyz.przemyk.simpleplanes.upgrades.floating.FloatingModel;
 import xyz.przemyk.simpleplanes.upgrades.floating.HeliFloatingModel;
 import xyz.przemyk.simpleplanes.upgrades.floating.LargeFloatingModel;
 import xyz.przemyk.simpleplanes.upgrades.seats.*;
+import xyz.przemyk.simpleplanes.upgrades.shooter.HeliFireworkModel;
 import xyz.przemyk.simpleplanes.upgrades.shooter.HeliShooterModel;
 import xyz.przemyk.simpleplanes.upgrades.shooter.LargeShooterModel;
 import xyz.przemyk.simpleplanes.upgrades.shooter.ShooterModel;
@@ -78,6 +79,8 @@ public class PlanesModelLayers {
     public static final ModelLayerLocation SHOOTER = new ModelLayerLocation(new ResourceLocation(SimplePlanesMod.MODID, "shooter"), "main");
     public static final ModelLayerLocation LARGE_SHOOTER = new ModelLayerLocation(new ResourceLocation(SimplePlanesMod.MODID, "shooter"), "large");
     public static final ModelLayerLocation HELI_SHOOTER = new ModelLayerLocation(new ResourceLocation(SimplePlanesMod.MODID, "shooter"), "heli");
+
+    public static final ModelLayerLocation HELI_FIREWORK_SHOOTER = new ModelLayerLocation(new ResourceLocation(SimplePlanesMod.MODID, "shooter_firework"), "heli");
 
     public static final ModelLayerLocation FLOATING = new ModelLayerLocation(new ResourceLocation(SimplePlanesMod.MODID, "floating"), "main");
     public static final ModelLayerLocation LARGE_FLOATING = new ModelLayerLocation(new ResourceLocation(SimplePlanesMod.MODID, "floating"), "large");
@@ -134,6 +137,8 @@ public class PlanesModelLayers {
         event.registerLayerDefinition(SHOOTER, ShooterModel::createBodyLayer);
         event.registerLayerDefinition(LARGE_SHOOTER, LargeShooterModel::createBodyLayer);
         event.registerLayerDefinition(HELI_SHOOTER, HeliShooterModel::createBodyLayer);
+
+        event.registerLayerDefinition(HELI_FIREWORK_SHOOTER, HeliShooterModel::createBodyLayer);
 
         event.registerLayerDefinition(FLOATING, FloatingModel::createBodyLayer);
         event.registerLayerDefinition(LARGE_FLOATING, LargeFloatingModel::createBodyLayer);
@@ -195,9 +200,9 @@ public class PlanesModelLayers {
                 new HeliShooterModel(entityModelSet.bakeLayer(HELI_SHOOTER)), SimplePlanesMod.texture("shooter_heli.png")));
 
         UpgradesModels.MODEL_ENTRIES.put(SimplePlanesUpgrades.FIREWORK_SHOOTER.get(), new UpgradesModels.ModelEntry(
-                new ShooterModel(entityModelSet.bakeLayer(SHOOTER)), SimplePlanesMod.texture("shooter.png"),
-                new LargeShooterModel(entityModelSet.bakeLayer(LARGE_SHOOTER)), SimplePlanesMod.texture("shooter_large.png"),
-                new HeliShooterModel(entityModelSet.bakeLayer(HELI_SHOOTER)), SimplePlanesMod.texture("shooter_heli.png")));
+                new HeliFireworkModel(entityModelSet.bakeLayer(HELI_FIREWORK_SHOOTER)), SimplePlanesMod.texture("shooter_heli.png"),
+                new HeliFireworkModel(entityModelSet.bakeLayer(HELI_FIREWORK_SHOOTER)), SimplePlanesMod.texture("shooter_heli.png"),
+                new HeliFireworkModel(entityModelSet.bakeLayer(HELI_FIREWORK_SHOOTER)), SimplePlanesMod.texture("shooter_heli.png")));
 
         UpgradesModels.MODEL_ENTRIES.put(SimplePlanesUpgrades.MINI_SHOOTER.get(), new UpgradesModels.ModelEntry(
                 new ShooterModel(entityModelSet.bakeLayer(SHOOTER)), SimplePlanesMod.texture("shooter.png"),

@@ -59,6 +59,7 @@ import xyz.przemyk.simpleplanes.upgrades.armor.ArmorUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.booster.BoosterUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.engines.EngineUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.shooter.FireworkLauncherUpgrade;
+import xyz.przemyk.simpleplanes.upgrades.shooter.MinigunUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.shooter.ShooterUpgrade;
 
 import javax.annotation.Nonnull;
@@ -289,11 +290,11 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
             if (upgrades.get(SimplePlanesUpgrades.SHOOTER.getId()) instanceof ShooterUpgrade shooterUpgrade) {
                 shooterUpgrade.use(player);
             }
-            else if (upgrades.get(SimplePlanesUpgrades.FIREWORK_SHOOTER.getId()) instanceof FireworkLauncherUpgrade shooterUpgrade) {
-                shooterUpgrade.use(player);
+            else if (upgrades.get(SimplePlanesUpgrades.FIREWORK_SHOOTER.getId()) instanceof FireworkLauncherUpgrade fireworkUpgrade) {
+                fireworkUpgrade.use(player);
             }
-            else if (upgrades.get(SimplePlanesUpgrades.FIREWORK_SHOOTER.getId()) instanceof FireworkLauncherUpgrade shooterUpgrade) {
-                shooterUpgrade.use(player);
+            else if (upgrades.get(SimplePlanesUpgrades.MINI_SHOOTER.getId()) instanceof MinigunUpgrade miniUpgrade) {
+                miniUpgrade.use(player);
             }
             return false;
         }
