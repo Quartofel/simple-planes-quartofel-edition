@@ -200,8 +200,8 @@ public class PlanesModelLayers {
                 new HeliShooterModel(entityModelSet.bakeLayer(HELI_SHOOTER)), SimplePlanesMod.texture("shooter_heli.png")));
 
         UpgradesModels.MODEL_ENTRIES.put(SimplePlanesUpgrades.FIREWORK_SHOOTER.get(), new UpgradesModels.ModelEntry(
-                new HeliFireworkModel(entityModelSet.bakeLayer(HELI_FIREWORK_SHOOTER)), SimplePlanesMod.texture("shooter_heli.png"),
-                new HeliFireworkModel(entityModelSet.bakeLayer(HELI_FIREWORK_SHOOTER)), SimplePlanesMod.texture("shooter_heli.png"),
+                new HeliFireworkModel(entityModelSet.bakeLayer(SHOOTER)), SimplePlanesMod.texture("shooter_heli.png"),
+                new HeliFireworkModel(entityModelSet.bakeLayer(LARGE_SHOOTER)), SimplePlanesMod.texture("shooter_heli.png"),
                 new HeliFireworkModel(entityModelSet.bakeLayer(HELI_FIREWORK_SHOOTER)), SimplePlanesMod.texture("shooter_heli.png")));
 
         UpgradesModels.MODEL_ENTRIES.put(SimplePlanesUpgrades.MINI_SHOOTER.get(), new UpgradesModels.ModelEntry(
