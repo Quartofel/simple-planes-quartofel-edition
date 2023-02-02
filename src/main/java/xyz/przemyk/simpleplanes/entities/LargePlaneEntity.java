@@ -43,6 +43,7 @@ public class LargePlaneEntity extends PlaneEntity {
                 entity.startRiding(this);
             }
         }
+
     }
 
     @Override
@@ -79,6 +80,7 @@ public class LargePlaneEntity extends PlaneEntity {
 
     @Override
     public int getFuelCost() {
+        makeSmoke(0,0,0);
         return SimplePlanesConfig.LARGE_PLANE_FUEL_COST.get();
     }
 

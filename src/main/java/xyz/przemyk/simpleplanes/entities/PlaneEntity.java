@@ -59,13 +59,12 @@ import xyz.przemyk.simpleplanes.upgrades.UpgradeType;
 import xyz.przemyk.simpleplanes.upgrades.armor.ArmorUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.booster.BoosterUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.engines.EngineUpgrade;
-import xyz.przemyk.simpleplanes.upgrades.shooterfirework.FireworkLauncherUpgrade;
+import xyz.przemyk.simpleplanes.upgrades.engines.furnace.FurnaceEngineUpgrade;
+import xyz.przemyk.simpleplanes.upgrades.launcher.LauncherUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.shooter.MinigunUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.shooter.ShooterUpgrade;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.print.DocFlavor;
 import java.util.*;
 
 import static net.minecraft.util.Mth.wrapDegrees;
@@ -293,8 +292,8 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
             if (upgrades.get(SimplePlanesUpgrades.SHOOTER.getId()) instanceof ShooterUpgrade shooterUpgrade) {
                 shooterUpgrade.use(player);
             }
-            else if (upgrades.get(SimplePlanesUpgrades.FIREWORK_SHOOTER.getId()) instanceof FireworkLauncherUpgrade fireworkUpgrade) {
-                fireworkUpgrade.use(player);
+            else if (upgrades.get(SimplePlanesUpgrades.LAUNCHER.getId()) instanceof LauncherUpgrade launcherUpgrade) {
+                launcherUpgrade.use(player);
             }
             else if (upgrades.get(SimplePlanesUpgrades.MINI_SHOOTER.getId()) instanceof MinigunUpgrade miniUpgrade) {
                 miniUpgrade.use(player);
@@ -368,6 +367,23 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
         return true;
     }
 
+    public void makeSmoke(float xpos, float ypos, float zpos) {
+        if (isPowered() && engineUpgrade instanceof FurnaceEngineUpgrade) {
+            double aim = Math.toRadians(this.getRotationVector().y * -1);
+            Vec3 p = this.position();
+            double fx = Math.sin(aim);
+            double fz = Math.cos(aim);
+            double sx = fz;
+            double sz = fx * -1;
+            Vec3 lp = new Vec3(p.x + (sx * 0.32) + (fx * -1.9), 0.0D, p.z + (sz * 0.32) + (fz * -1.9));
+            Vec3 rp = new Vec3(p.x - (sx * 0.32) + (fx * -1.9), 0.0D, p.z - (sz * 0.32) + (fz * -1.9));
+            this.level.addParticle(ParticleTypes.SMOKE, lp.x + xpos, p.y + ypos, lp.z + zpos, 0 - (fx * 0.05), 0,
+                    0 - (fz * 0.05));
+            this.level.addParticle(ParticleTypes.SMOKE, rp.x + xpos, p.y + ypos, rp.z + zpos, 0 - (fx * 0.05), 0,
+                    0 - (fz * 0.05));
+        }
+    }
+
 /*
     public float rotupdate() {
         float targetRotation = getThrottle();
@@ -435,6 +451,7 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
         if (controllingPassenger instanceof Player playerEntity) {
             tempMotionVars.moveForward = getMoveForward(playerEntity);
             tempMotionVars.moveStrafing = playerEntity.xxa;
+        } else {
             tempMotionVars.moveForward = 0;
             tempMotionVars.moveStrafing = 0;
             setSprinting(false);
@@ -587,6 +604,7 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
     }
 
     public int getFuelCost() {
+        makeSmoke(0,0,1);
         return SimplePlanesConfig.PLANE_FUEL_COST.get();
     }
 

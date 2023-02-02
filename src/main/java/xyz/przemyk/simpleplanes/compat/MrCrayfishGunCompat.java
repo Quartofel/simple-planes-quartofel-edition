@@ -56,16 +56,15 @@ public class MrCrayfishGunCompat {
             else if (ModItems.ADVANCED_AMMO.get() == ammoItem && shooterType == "highcal") {
                 gunDummy = heavyRifleDummy;
             }
-            // else if (ModItems.GRENADE.get() == ammoItem) {
-            //    gunDummy = grenadeLauncherDummy;
-            //}
             else if (ModItems.MISSILE.get() == ammoItem && shooterType == "launcher") {
                 gunDummy = bazookaDummy;
             }
             else {
                 return;
             }
-
+            // else if (ModItems.GRENADE.get() == ammoItem) {
+            //    gunDummy = grenadeLauncherDummy;
+            //}
             GunItem gunItem = (GunItem) gunDummy.getItem();
             Gun gun = gunItem.getGun();
             IProjectileFactory projectileFactory = ProjectileManager.getInstance().getFactory(ForgeRegistries.ITEMS.getKey(ammoItem));

@@ -1,4 +1,4 @@
-package xyz.przemyk.simpleplanes.upgrades.shooter;
+package xyz.przemyk.simpleplanes.upgrades.launcher;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -8,11 +8,12 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import xyz.przemyk.simpleplanes.entities.PlaneEntity;
 
-public class LargeShooterModel extends EntityModel<PlaneEntity> {
-	private final ModelPart Shooter;
 
-	public LargeShooterModel(ModelPart root) {
-		this.Shooter = root.getChild("Shooter");
+public class LargeLauncherModel extends EntityModel<PlaneEntity> {
+	private final ModelPart Launcher;
+
+	public LargeLauncherModel(ModelPart root) {
+		this.Launcher = root.getChild("Shooter");
 	}
 
 	public static LayerDefinition createBodyLayer() {
@@ -33,6 +34,6 @@ public class LargeShooterModel extends EntityModel<PlaneEntity> {
 
 	@Override
 	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-		Shooter.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
+		Launcher.render(poseStack, vertexConsumer, packedLight, packedOverlay, red, green, blue, alpha);
 	}
 }

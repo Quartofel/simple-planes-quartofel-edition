@@ -8,8 +8,8 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import xyz.przemyk.simpleplanes.entities.PlaneEntity;
 
-
 public class HeliShooterModel extends EntityModel<PlaneEntity> {
+
 	private final ModelPart Shooter;
 
 	public HeliShooterModel(ModelPart root) {

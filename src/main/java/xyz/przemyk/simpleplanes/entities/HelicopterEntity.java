@@ -125,6 +125,7 @@ public class HelicopterEntity extends LargePlaneEntity {
 
     @Override
     public int getFuelCost() {
+        makeSmoke(0,-0.25f,0.5f);
         return SimplePlanesConfig.HELICOPTER_FUEL_COST.get();
     }
 
