@@ -54,9 +54,9 @@ public class FireworkLauncherUpgrade extends Upgrade {
         Item item = itemStack.getItem();
 
         if (item == Items.FIREWORK_ROCKET) {
-            FireworkRocketEntity fireworkrocketentity = new FireworkRocketEntity(level, itemStack, x+1, y, z, true);
+            FireworkRocketEntity fireworkrocketentity = new FireworkRocketEntity(level, itemStack, x+1, y, z-2.5, true);
             fireworkrocketentity.shoot(-motion.x, -motion.y, -motion.z, -(float) Math.max(0.5F, motion.length() * 1.5), 1.0F);
-            FireworkRocketEntity fireworkrocketentity2 = new FireworkRocketEntity(level, itemStack, x-1, y, z, true);
+            FireworkRocketEntity fireworkrocketentity2 = new FireworkRocketEntity(level, itemStack, x-1, y, z-2.5, true);
             fireworkrocketentity2.shoot(-motion.x, -motion.y, -motion.z, -(float) Math.max(0.5F, motion.length() * 1.5), 1.0F);
             level.addFreshEntity(fireworkrocketentity2);
             level.addFreshEntity(fireworkrocketentity);

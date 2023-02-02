@@ -149,10 +149,10 @@ public class ClientEventHandler {
                     }
 
                     ClientUtil.blit(matrixStack, -90, scaledWidth - 24, scaledHeight - 42, 0, 84, 22, 40);
-                    int throttle = planeEntity.getThrottle();
+                    float throttle = planeEntity.getThrottle();
                     if (throttle > 0) {
-                        int throttleScaled = throttle * 28 / BoosterUpgrade.MAX_THROTTLE;
-                        ClientUtil.blit(matrixStack, -90, scaledWidth - 24 + 10, scaledHeight - 42 + 6 + 28 - throttleScaled, 22, 90 + 28 - throttleScaled, 2, throttleScaled);
+                        float throttleScaled = throttle * 28 / BoosterUpgrade.MAX_THROTTLE;
+                        ClientUtil.blit(matrixStack, -90, scaledWidth - 24 + 10, (int) (scaledHeight - 42 + 6 + 28 - throttleScaled), 22, (int) (90 + 28 - throttleScaled), 2, (int) throttleScaled);
                     }
 
                     if (planeEntity.engineUpgrade != null) {

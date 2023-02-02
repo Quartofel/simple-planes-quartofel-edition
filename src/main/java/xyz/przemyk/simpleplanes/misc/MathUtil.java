@@ -10,6 +10,10 @@ public class MathUtil {
         return Math.sqrt((vec3.x * vec3.x) + (vec3.z * vec3.z));
     }
 
+    public static double getVerticalDistanceSqr(Vec3 vec3) {
+        return Math.sqrt((vec3.y * vec3.y) + (vec3.z * vec3.z));
+    }
+
     public static double normalizedDotProduct(Vec3 v1, Vec3 v2) {
         return v1.dot(v2) / (v1.length() * v2.length());
     }

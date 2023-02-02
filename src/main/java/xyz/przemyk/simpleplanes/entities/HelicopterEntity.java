@@ -55,6 +55,29 @@ public class HelicopterEntity extends LargePlaneEntity {
     }
 
     @Override
+    protected void tickYaw() {
+        float yaw;
+        if (getHealth() <= 0) {
+            yaw = 10.0f;
+        } else {
+            if (getYawRight() > 0) {
+                yawSpeed += 0.5f * getRotationSpeedMultiplier();
+            } else if (getYawRight() < 0) {
+                yawSpeed -= 0.5f * getRotationSpeedMultiplier();
+            } else {
+                if (yawSpeed < 0) {
+                    yawSpeed += 0.5f * getRotationSpeedMultiplier();
+                } else if (yawSpeed > 0) {
+                    yawSpeed -= 0.75f * getRotationSpeedMultiplier();
+                }
+            }
+            yawSpeed = Mth.clamp(yawSpeed, -2.5f * getRotationSpeedMultiplier(), 2.5f * getRotationSpeedMultiplier());
+            yaw = yawSpeed;
+        }
+        setYRot(getYRot() + yaw);
+    }
+
+    @Override
     protected void tickRoll(TempMotionVars tempMotionVars) {
         if (getHealth() <= 0) {
             setXRot(-2);
@@ -99,6 +122,7 @@ public class HelicopterEntity extends LargePlaneEntity {
     protected float getGroundPitch() {
         return 0;
     }
+
     @Override
     public int getFuelCost() {
         return SimplePlanesConfig.HELICOPTER_FUEL_COST.get();

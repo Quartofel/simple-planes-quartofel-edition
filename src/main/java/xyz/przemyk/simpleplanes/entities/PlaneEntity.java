@@ -1,5 +1,6 @@
 package xyz.przemyk.simpleplanes.entities;
 
+import javax.annotation.Nullable;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
@@ -64,6 +65,7 @@ import xyz.przemyk.simpleplanes.upgrades.shooter.ShooterUpgrade;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.print.DocFlavor;
 import java.util.*;
 
 import static net.minecraft.util.Mth.wrapDegrees;
@@ -79,7 +81,7 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
     public static final EntityDataAccessor<Integer> TIME_SINCE_HIT = SynchedEntityData.defineId(PlaneEntity.class, EntityDataSerializers.INT);
     public static final EntityDataAccessor<Float> DAMAGE_TAKEN = SynchedEntityData.defineId(PlaneEntity.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Quaternion> Q = SynchedEntityData.defineId(PlaneEntity.class, SimplePlanesDataSerializers.QUATERNION_SERIALIZER_ENTRY.get());
-    public static final EntityDataAccessor<Integer> THROTTLE = SynchedEntityData.defineId(PlaneEntity.class, EntityDataSerializers.INT);
+    public static final EntityDataAccessor<Float> THROTTLE = SynchedEntityData.defineId(PlaneEntity.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Byte> PITCH_UP = SynchedEntityData.defineId(PlaneEntity.class, EntityDataSerializers.BYTE);
     public static final EntityDataAccessor<Byte> YAW_RIGHT = SynchedEntityData.defineId(PlaneEntity.class, EntityDataSerializers.BYTE);
     public static final int MAX_THROTTLE = 5;
@@ -99,6 +101,7 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
     private Block planksMaterial;
     private int damageTimeout;
     public int notMovingTime;
+    public float ias;
     public int goldenHeartsTimeout = 0;
 
     private final int networkUpdateInterval;
@@ -133,7 +136,7 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
         entityData.define(MATERIAL, ForgeRegistries.BLOCKS.getKey(Blocks.OAK_PLANKS).toString());
         entityData.define(TIME_SINCE_HIT, 0);
         entityData.define(DAMAGE_TAKEN, 0f);
-        entityData.define(THROTTLE, 0);
+        entityData.define(THROTTLE, 0f);
         entityData.define(PITCH_UP, (byte) 0);
         entityData.define(YAW_RIGHT, (byte) 0);
     }
@@ -365,10 +368,26 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
         return true;
     }
 
+/*
+    public float rotupdate() {
+        float targetRotation = getThrottle();
+        if (propellerRotationNew != targetRotation) {
+            float distance = targetRotation - propellerRotationNew;
+            if (Math.abs(distance) <= 0.1) {
+                propellerRotationNew = targetRotation;
+            } else if(propellerRotationNew > targetRotation) {
+                propellerRotationNew += distance * 1;
+            } else if(propellerRotationNew < targetRotation) {
+                propellerRotationNew -= distance * 1;
+            }
+        }
+        return propellerRotationNew;
+    }
+*/
     @Override
     public void tick() {
         super.tick();
-
+        ias = (float) (Math.sqrt(getHorizontalDistanceSqr(getDeltaMovement())) + Math.sqrt(getVerticalDistanceSqr(getDeltaMovement())));
         if (Double.isNaN(getDeltaMovement().length())) {
             setDeltaMovement(Vec3.ZERO);
         }
@@ -378,15 +397,17 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
         if (level.isClientSide) {
             propellerRotationOld = propellerRotationNew;
             if (isPowered()) {
-                int throttle = getThrottle();
-                if(getControllingPassenger() != null && getThrottle() == 0){
+                float throttle = getThrottle();
+                if(getControllingPassenger() != null && throttle == 0){
                     propellerRotationNew += throttle + 0.2;
                 }
-                propellerRotationNew += throttle * 0.5;
+                else {
+                    propellerRotationNew += throttle * 0.5;
+                }
             }
         }
 
-        if (level.isClientSide && getHealth() <= 0) {
+        if (level.isClientSide && getHealth() <= 4) {
             level.addAlwaysVisibleParticle(ParticleTypes.LARGE_SMOKE, true, getX(), getY(), getZ(), 0.0, 0.005, 0.0);
         }
 
@@ -414,7 +435,6 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
         if (controllingPassenger instanceof Player playerEntity) {
             tempMotionVars.moveForward = getMoveForward(playerEntity);
             tempMotionVars.moveStrafing = playerEntity.xxa;
-        } else {
             tempMotionVars.moveForward = 0;
             tempMotionVars.moveStrafing = 0;
             setSprinting(false);
@@ -492,6 +512,7 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
                     }
                 }
             }
+
         }
 
         if (getHealth() <= 0 && onGround && !isRemoved()) {
@@ -713,8 +734,13 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
         }
 
         motion = motion.add(pushVec);
+        if (!isPowered()) {
+            tempMotionVars.push = 0;
+            motion = motion.add(0, -0.25, 0);
+        } else {
+            motion = motion.add(0, tempMotionVars.gravity, 0);
+        }
 
-        motion = motion.add(0, tempMotionVars.gravity, 0);
 
         setDeltaMovement(motion);
     }
@@ -980,8 +1006,19 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
 
     @Override
     public boolean causeFallDamage(float fallDistance, float damageMultiplier, DamageSource p_146830_) {
-        if (degreesDifferenceAbs(rotationRoll, 0) > 45) {
-            crash(fallDistance * damageMultiplier);
+        //if (degreesDifferenceAbs(rotationRoll, 0) > 45) {
+        //    crash(fallDistance * damageMultiplier);
+        //}
+        if (verticalCollision && !level.isClientSide && onGroundTicks <= 0) {
+            if (getHealth() <= 0) {
+                crash(16);
+            } else {
+                double speedTotal = Math.sqrt(getVerticalDistanceSqr(getDeltaMovement())) + Math.sqrt(getHorizontalDistanceSqr(getDeltaMovement()));
+                float f2 = (float) (speedTotal * 10.0D - 5.0D);
+                if (f2 > 10.0F) {
+                    crash(f2);
+                }
+            }
         }
         return false;
     }
@@ -1068,13 +1105,13 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
                 }
             }
         }
-
+/*
         if (getPassengers().size() == 0) {
             setThrottle((byte) 0);
             setPitchUp((byte) 0);
             setYawRight((byte) 0);
         }
-
+*/
         return super.getDismountLocationForPassenger(livingEntity);
     }
 
@@ -1276,21 +1313,21 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
     private static final TempMotionVars TEMP_MOTION_VARS = new TempMotionVars();
 
     public void changeThrottle(ChangeThrottlePacket.Type type) {
-        int throttle = getThrottle();
+        float throttle = getThrottle();
         if (type == ChangeThrottlePacket.Type.UP) {
             if (throttle < MAX_THROTTLE || (upgrades.containsKey(SimplePlanesUpgrades.BOOSTER.getId()) && throttle < BoosterUpgrade.MAX_THROTTLE)) {
-                setThrottle(throttle + 1);
+                setThrottle(throttle + 0.5f);
             }
         } else if (throttle > 0) {
-            setThrottle(throttle - 1);
+            setThrottle(throttle - 0.5f);
         }
     }
 
-    public int getThrottle() {
+    public float getThrottle() {
         return entityData.get(THROTTLE);
     }
 
-    public void setThrottle(int value) {
+    public void setThrottle(float value) {
         entityData.set(THROTTLE, value);
     }
 
