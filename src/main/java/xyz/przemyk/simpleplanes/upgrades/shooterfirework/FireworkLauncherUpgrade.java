@@ -1,4 +1,4 @@
-package xyz.przemyk.simpleplanes.upgrades.shooter;
+package xyz.przemyk.simpleplanes.upgrades.shooterfirework;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
@@ -6,7 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.*;
+import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
@@ -17,11 +17,13 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.przemyk.simpleplanes.client.gui.PlaneInventoryScreen;
+import xyz.przemyk.simpleplanes.compat.MrCrayfishGunCompatMinigun;
 import xyz.przemyk.simpleplanes.entities.PlaneEntity;
 import xyz.przemyk.simpleplanes.setup.SimplePlanesUpgrades;
 import xyz.przemyk.simpleplanes.upgrades.Upgrade;
@@ -53,21 +55,18 @@ public class FireworkLauncherUpgrade extends Upgrade {
 
         if (item == Items.FIREWORK_ROCKET) {
             FireworkRocketEntity fireworkrocketentity = new FireworkRocketEntity(level, itemStack, x+1, y, z, true);
-
             fireworkrocketentity.shoot(-motion.x, -motion.y, -motion.z, -(float) Math.max(0.5F, motion.length() * 1.5), 1.0F);
-
+            FireworkRocketEntity fireworkrocketentity2 = new FireworkRocketEntity(level, itemStack, x-1, y, z, true);
+            fireworkrocketentity2.shoot(-motion.x, -motion.y, -motion.z, -(float) Math.max(0.5F, motion.length() * 1.5), 1.0F);
+            level.addFreshEntity(fireworkrocketentity2);
             level.addFreshEntity(fireworkrocketentity);
             //ile amunicji zjeść
             if (!player.isCreative()) {
-                itemStackHandler.extractItem(0, 1, false);
-                itemStack = itemStackHandler.getStackInSlot(0);
-                if(itemStack != null){
-                    FireworkRocketEntity fireworkrocketentity2 = new FireworkRocketEntity(level, itemStack, x-1, y, z, true);
-                    fireworkrocketentity2.shoot(-motion.x, -motion.y, -motion.z, -(float) Math.max(0.5F, motion.length() * 1.5), 1.0F);
-                    level.addFreshEntity(fireworkrocketentity2);
-                }
+                itemStackHandler.extractItem(0, 2, false);
             }
-
+        else{
+            ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompatMinigun.shooterBehaviour("launcher", item, itemStackHandler, level, player, motion, x, y, z));
+        }
 
         }
 

@@ -58,7 +58,7 @@ import xyz.przemyk.simpleplanes.upgrades.UpgradeType;
 import xyz.przemyk.simpleplanes.upgrades.armor.ArmorUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.booster.BoosterUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.engines.EngineUpgrade;
-import xyz.przemyk.simpleplanes.upgrades.shooter.FireworkLauncherUpgrade;
+import xyz.przemyk.simpleplanes.upgrades.shooterfirework.FireworkLauncherUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.shooter.MinigunUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.shooter.ShooterUpgrade;
 

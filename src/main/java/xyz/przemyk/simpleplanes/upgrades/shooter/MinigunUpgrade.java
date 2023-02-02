@@ -53,7 +53,7 @@ public class MinigunUpgrade extends Upgrade {
         ItemStack itemStack = itemStackHandler.getStackInSlot(0);
         Item item = itemStack.getItem();
 
-        ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompatMinigun.shooterBehaviour(item, itemStackHandler, level, player, motion, x, y, z));
+        ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompatMinigun.shooterBehaviour("gatling", item, itemStackHandler, level, player, motion, x, y, z));
 
     }
     @Override

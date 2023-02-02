@@ -42,25 +42,27 @@ public class MrCrayfishGunCompat {
     }
 
     public static final ItemStack minigunDummy = ModItems.MINI_GUN.get().getDefaultInstance();
-    public static final ItemStack shotgunDummy = ModItems.SHOTGUN.get().getDefaultInstance();
+    //public static final ItemStack shotgunDummy = ModItems.SHOTGUN.get().getDefaultInstance();
     public static final ItemStack heavyRifleDummy = ModItems.HEAVY_RIFLE.get().getDefaultInstance();
-    public static final ItemStack grenadeLauncherDummy = ModItems.GRENADE_LAUNCHER.get().getDefaultInstance();
+    //public static final ItemStack grenadeLauncherDummy = ModItems.GRENADE_LAUNCHER.get().getDefaultInstance();
     public static final ItemStack bazookaDummy = ModItems.BAZOOKA.get().getDefaultInstance();
 
-    public static void shooterBehaviour(Item ammoItem, ItemStackHandler itemStackHandler, Level level, Player player, Vec3 motion, double x, double y, double z) {
+    public static void shooterBehaviour(String shooterType, Item ammoItem, ItemStackHandler itemStackHandler, Level level, Player player, Vec3 motion, double x, double y, double z) {
         if (ammoItem instanceof IAmmo) {
             ItemStack gunDummy;
-            if (ModItems.BASIC_BULLET.get() == ammoItem) {
+            if (ModItems.BASIC_BULLET.get() == ammoItem && shooterType == "gatling") {
                 gunDummy = minigunDummy;
-            } else if (ModItems.SHELL.get() == ammoItem) {
-                gunDummy = shotgunDummy;
-            } else if (ModItems.ADVANCED_AMMO.get() == ammoItem) {
+            }
+            else if (ModItems.ADVANCED_AMMO.get() == ammoItem && shooterType == "highcal") {
                 gunDummy = heavyRifleDummy;
-            } else if (ModItems.GRENADE.get() == ammoItem) {
-                gunDummy = grenadeLauncherDummy;
-            } else if (ModItems.MISSILE.get() == ammoItem) {
+            }
+            // else if (ModItems.GRENADE.get() == ammoItem) {
+            //    gunDummy = grenadeLauncherDummy;
+            //}
+            else if (ModItems.MISSILE.get() == ammoItem && shooterType == "launcher") {
                 gunDummy = bazookaDummy;
-            } else {
+            }
+            else {
                 return;
             }
 

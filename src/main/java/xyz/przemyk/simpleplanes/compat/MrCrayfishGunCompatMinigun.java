@@ -44,7 +44,7 @@ public class MrCrayfishGunCompatMinigun {
     public static final ItemStack minigunDummy = ModItems.MINI_GUN.get().getDefaultInstance();
 
 
-    public static void shooterBehaviour(Item ammoItem, ItemStackHandler itemStackHandler, Level level, Player player, Vec3 motion, double x, double y, double z) {
+    public static void shooterBehaviour(String launcher, Item ammoItem, ItemStackHandler itemStackHandler, Level level, Player player, Vec3 motion, double x, double y, double z) {
         if (ammoItem instanceof IAmmo) {
             ItemStack MinigunDummy;
             MinigunDummy = minigunDummy;

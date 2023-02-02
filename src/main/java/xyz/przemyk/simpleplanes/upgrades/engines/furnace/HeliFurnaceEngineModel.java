@@ -21,11 +21,11 @@ public class HeliFurnaceEngineModel extends EntityModel<PlaneEntity> {
 
 		PartDefinition FurnaceEngine = partdefinition.addOrReplaceChild("FurnaceEngine", CubeListBuilder.create(), PartPose.offset(0.0F, -17.0F, -47.5F));
 
-		PartDefinition cube_r1 = FurnaceEngine.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 0).addBox(-3.6841F, -3.5F, -19.5143F, 7.0F, 7.0F, 25.0F, new CubeDeformation(-0.18F)), PartPose.offsetAndRotation(1.8841F, 21.0F, 78.6143F, 0.0F, 0.0F, 0.0F));
+		PartDefinition cube_r1 = FurnaceEngine.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(33, 0).addBox(-3.6841F, -3.5F, -19.5143F, 7.0F, 7.0F, 25.0F, new CubeDeformation(-0.18F)), PartPose.offsetAndRotation(1.8841F, 21.0F, 78.6143F, 0.0F, 0.0F, 0.0F));
 
-		PartDefinition cube_r2 = FurnaceEngine.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(41, 13).addBox(-3.4341F, -4.0F, -13.5143F, 7.0F, 8.0F, 16.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.1159F, 21.0F, 78.6143F, 0.0F, 0.0F, 0.0F));
+		PartDefinition cube_r2 = FurnaceEngine.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(12, 0).addBox(-3.4341F, -4.0F, -13.5143F, 7.0F, 8.0F, 16.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-0.1159F, 21.0F, 78.6143F, 0.0F, 0.0F, 0.0F));
 
-		PartDefinition cube_r3 = FurnaceEngine.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(0, 58).addBox(-6.3523F, -3.5F, 1.3655F, 7.0F, 7.0F, 7.0F, new CubeDeformation(-0.179F)), PartPose.offsetAndRotation(1.8841F, 21.0F, 78.6143F, 0.0F, 0.7418F, 0.0F));
+		PartDefinition cube_r3 = FurnaceEngine.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(0, 0).addBox(-3.5F, -3.5F, -3.5F, 7.0F, 7.0F, 7.0F, new CubeDeformation(-0.179F)), PartPose.offsetAndRotation(3.0683F, 21.0F, 84.1285F, 2.3126F, 0.0F, 1.5708F));
 
 		return LayerDefinition.create(meshdefinition, 128, 128);
 	}

@@ -54,7 +54,7 @@ public class ShooterUpgrade extends Upgrade {
         ItemStack itemStack = itemStackHandler.getStackInSlot(0);
         Item item = itemStack.getItem();
 
-        ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompat.shooterBehaviour(item, itemStackHandler, level, player, motion, x, y, z));
+        ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompat.shooterBehaviour("highcal", item, itemStackHandler, level, player, motion, x, y, z));
 
     }
 

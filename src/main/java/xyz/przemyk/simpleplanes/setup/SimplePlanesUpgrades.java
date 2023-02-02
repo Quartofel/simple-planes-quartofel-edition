@@ -18,7 +18,7 @@ import xyz.przemyk.simpleplanes.upgrades.heal.HealingUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.jukebox.JukeboxUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.payload.PayloadUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.seats.SeatsUpgrade;
-import xyz.przemyk.simpleplanes.upgrades.shooter.FireworkLauncherUpgrade;
+import xyz.przemyk.simpleplanes.upgrades.shooterfirework.FireworkLauncherUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.shooter.MinigunUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.shooter.ShooterUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.solarpanel.SolarPanelUpgrade;

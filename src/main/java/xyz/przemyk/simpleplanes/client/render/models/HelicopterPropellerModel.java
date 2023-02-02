@@ -22,27 +22,15 @@ public class HelicopterPropellerModel extends EntityModel<PlaneEntity> {
 
         PartDefinition IronPropeller = partdefinition.addOrReplaceChild("IronPropeller", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-        PartDefinition bone_propeller = IronPropeller.addOrReplaceChild("bone_propeller", CubeListBuilder.create().texOffs(17, 28).addBox(-1.0F, -22.3406F, -1.0003F, 2.0F, 29.0F, 2.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 24).addBox(-5.0F, -20.3406F, -1.0003F, 10.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 28).addBox(-2.0F, -20.8406F, -2.0003F, 4.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(6.0F, -30.6594F, 3.0003F, 0.0F, 0.0F, 0.2182F));
+        PartDefinition bone_propeller = IronPropeller.addOrReplaceChild("bone_propeller", CubeListBuilder.create().texOffs(0, 16).addBox(-1.0F, -22.3406F, -1.0003F, 2.0F, 29.0F, 2.0F, new CubeDeformation(0.0F))
+                .texOffs(-10, 0).mirror().addBox(-50.0F, -20.3406F, -5.0003F, 100.0F, 0.0F, 10.0F, new CubeDeformation(0.0F)).mirror(false)
+                .texOffs(0, 10).addBox(-2.0F, -20.8406F, -2.0003F, 4.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(6.0F, -30.6594F, 3.0003F, 0.0F, 0.0F, 0.2182F));
 
-        PartDefinition cube_r1 = bone_propeller.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 20).addBox(-5.0F, -0.5F, -1.0F, 10.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -19.8406F, -0.0003F, 0.0F, -1.5708F, 0.0F));
+        PartDefinition bone_propeller2 = IronPropeller.addOrReplaceChild("bone_propeller2", CubeListBuilder.create().texOffs(0, 16).addBox(-1.0F, -22.5073F, -1.0003F, 2.0F, 29.0F, 2.0F, new CubeDeformation(0.0F))
+                .texOffs(-10, 0).addBox(-50.0F, -20.5073F, -5.0003F, 100.0F, 0.0F, 10.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 10).addBox(-2.0F, -21.0073F, -2.0003F, 4.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-6.0F, -30.4927F, 3.0003F, 0.0F, -0.6109F, -0.2182F));
 
-        PartDefinition A_r1 = bone_propeller.addOrReplaceChild("A_r1", CubeListBuilder.create().texOffs(0, 0).addBox(-25.0F, -0.5F, -1.5F, 50.0F, 1.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-30.0F, -19.8406F, 0.4997F, 0.0873F, 0.0F, 3.1416F));
-
-        PartDefinition A_r2 = bone_propeller.addOrReplaceChild("A_r2", CubeListBuilder.create().texOffs(0, 0).addBox(5.0F, -0.5F, -1.0F, 50.0F, 1.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -19.8406F, -0.0003F, -3.0543F, 0.0F, 0.0F));
-
-        PartDefinition bone_propeller2 = IronPropeller.addOrReplaceChild("bone_propeller2", CubeListBuilder.create().texOffs(17, 28).addBox(-1.0F, -22.5073F, -1.0003F, 2.0F, 29.0F, 2.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 24).addBox(-5.0F, -20.5073F, -1.0003F, 10.0F, 1.0F, 2.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 28).addBox(-2.0F, -21.0073F, -2.0003F, 4.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-6.0F, -30.4927F, 3.0003F, 0.0F, -0.6109F, -0.2182F));
-
-        PartDefinition cube_r2 = bone_propeller2.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(0, 20).addBox(-5.0F, -0.5F, -1.0F, 10.0F, 1.0F, 2.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(0.0F, -20.0073F, -0.0003F, 0.0F, -1.5708F, 0.0F));
-
-        PartDefinition A_r3 = bone_propeller2.addOrReplaceChild("A_r3", CubeListBuilder.create().texOffs(0, 0).addBox(-25.0F, -0.5F, -1.5F, 50.0F, 1.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-30.0F, -20.0073F, -0.5003F, 3.0543F, 0.0F, 3.1416F));
-
-        PartDefinition A_r4 = bone_propeller2.addOrReplaceChild("A_r4", CubeListBuilder.create().texOffs(0, 0).addBox(-25.0F, -0.5F, -1.5F, 50.0F, 1.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(30.0F, -20.0073F, 0.4997F, 3.0543F, 0.0F, 0.0F));
-
-        return LayerDefinition.create(meshdefinition, 128, 128);
+        return LayerDefinition.create(meshdefinition, 256, 256);
     }
 
     public HelicopterPropellerModel(ModelPart root) {
