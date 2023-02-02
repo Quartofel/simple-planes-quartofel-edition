@@ -39,7 +39,7 @@ public class ShooterUpgrade extends Upgrade {
     }
 
 
-    public void use(Player player) {
+    public void use(Player player, PlaneEntity plane) {
         Vector3f motion1 = planeEntity.transformPos(new Vector3f(0, -0.25f, (float) (1 + planeEntity.getDeltaMovement().length())));
         Vec3 motion = new Vec3(motion1);
         Level level = player.level;
@@ -58,60 +58,6 @@ public class ShooterUpgrade extends Upgrade {
 
     }
 
-/*
-        if (item == Items.FIREWORK_ROCKET) {
-            FireworkRocketEntity fireworkrocketentity = new FireworkRocketEntity(level, itemStack, x, y, z, true);
-            fireworkrocketentity.shoot(-motion.x, -motion.y, -motion.z, -(float) Math.max(0.5F, motion.length() * 1.5), 1.0F);
-            level.addFreshEntity(fireworkrocketentity);
-            //ile amunicji zjeść
-            if (!player.isCreative()) {
-                itemStackHandler.extractItem(0, 1, false);
-            }
-        } else if (item == Items.FIRE_CHARGE) {
-            double d3 = random.nextGaussian() * 0.05D + 2 * motion.x;
-            double d4 = random.nextGaussian() * 0.05D;
-            double d5 = random.nextGaussian() * 0.05D + 2 * motion.z;
-            Fireball fireBallEntity = Util
-                .make(new SmallFireball(level, player, d3, d4, d5), (p_229425_1_) -> p_229425_1_.setItem(itemStack));
-            fireBallEntity.setPos(x, y, z);
-            fireBallEntity.setDeltaMovement(motion.scale(2));
-            level.addFreshEntity(fireBallEntity);
-            if (!player.isCreative()) {
-                itemStackHandler.extractItem(0, 1, false);
-            }
-        } else if (item == Items.ARROW) {
-            Arrow arrowEntity = new Arrow(level, x, y, z);
-            arrowEntity.setOwner(player);
-            arrowEntity.setDeltaMovement(motion.scale(Math.max(motion.length() * 1.5, 3) / motion.length()));
-            if (!player.isCreative()) {
-                itemStackHandler.extractItem(0, 1, false);
-                arrowEntity.pickup = AbstractArrow.Pickup.ALLOWED;
-            }
-            level.addFreshEntity(arrowEntity);
-        } else if (item == Items.TIPPED_ARROW) {
-            Arrow arrowEntity = new Arrow(level, x, y, z);
-            arrowEntity.setOwner(player);
-            arrowEntity.setEffectsFromItem(itemStack);
-            arrowEntity.setDeltaMovement(motion.scale(Math.max(motion.length() * 1.5, 3) / motion.length()));
-            if (!player.isCreative()) {
-                itemStackHandler.extractItem(0, 1, false);
-                arrowEntity.pickup = AbstractArrow.Pickup.ALLOWED;
-            }
-            level.addFreshEntity(arrowEntity);
-        } else if (item == Items.SPECTRAL_ARROW) {
-            SpectralArrow arrowEntity = new SpectralArrow(level, x, y, z);
-            arrowEntity.setOwner(player);
-            arrowEntity.setDeltaMovement(motion.scale(Math.max(motion.length() * 1.5, 3) / motion.length()));
-            if (!player.isCreative()) {
-                itemStackHandler.extractItem(0, 1, false);
-                arrowEntity.pickup = AbstractArrow.Pickup.ALLOWED;
-            }
-            level.addFreshEntity(arrowEntity);
-        } else {
-            ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompat.shooterBehaviour(item, itemStackHandler, level, player, motion, x, y, z));
-        }
-    }
-*/
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();

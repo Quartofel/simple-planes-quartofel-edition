@@ -6,6 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.FireworkRocketEntity;
 import net.minecraft.world.inventory.DataSlot;
@@ -41,20 +42,20 @@ public class LauncherUpgrade extends Upgrade {
         super(SimplePlanesUpgrades.LAUNCHER.get(), planeEntity);
     }
 
-    public void use(Player player) {
+    public void use(Player player, double offx, double offz, double offy, boolean left) {
         Vector3f motion1 = planeEntity.transformPos(new Vector3f(0, -0.25f, (float) (1 + planeEntity.getDeltaMovement().length())));
         Vec3 motion = new Vec3(motion1);
         Level level = player.level;
-/*
-        double aim = Math.toRadians(player.getRotationVector().y * -1);
-        Vec3 p = player.position();
+
+        double aim = Math.toRadians(planeEntity.getRotationVector().y * -1);
+        Vec3 p = planeEntity.position();
         double fx = Math.sin(aim);
         double fz = Math.cos(aim);
         double sx = fz;
         double sz = fx * -1;
-        Vec3 lp = new Vec3(p.x + (sx * 1) + (fx * 1), 0.0D, p.z + (sz * 1) + (fz * 1));
-        Vec3 rp = new Vec3(p.x - (sx * 1) + (fx * 1), 0.0D, p.z - (sz * 1) + (fz * 1));
-*/
+        Vec3 lp = new Vec3(p.x + (sx * offx) + (fx * offz), 0.0D, p.z + (sz * offx) + (fz * offz));
+        Vec3 rp = new Vec3(p.x - (sx * offx) + (fx * offz), 0.0D, p.z - (sz * offx) + (fz * offz));
+
         Vector3f pos = planeEntity.transformPos(new Vector3f(0.0f, 1.8f, 2.0f));
         updateClient();
 
@@ -65,22 +66,26 @@ public class LauncherUpgrade extends Upgrade {
         ItemStack itemStack = itemStackHandler.getStackInSlot(0);
         Item item = itemStack.getItem();
 
+        if(left) {
+            if (item == Items.FIREWORK_ROCKET) {
+                FireworkRocketEntity fireworkrocketentity = new FireworkRocketEntity(level, itemStack, lp.x, p.y + offy, lp.z, true);
+                fireworkrocketentity.shoot(-motion.x, -motion.y, -motion.z, -(float) Math.max(0.5F, motion.length() * 1.5), 1.0F);
+                level.addFreshEntity(fireworkrocketentity);
 
-        if(item == Items.FIREWORK_ROCKET) {
-            FireworkRocketEntity fireworkrocketentity = new FireworkRocketEntity(level, itemStack,x, y, z, true);
-            fireworkrocketentity.shoot(-motion.x, -motion.y, -motion.z, -(float) Math.max(0.5F, motion.length() * 1.5), 1.0F);
-            FireworkRocketEntity fireworkrocketentity2 = new FireworkRocketEntity(level, itemStack,x, y, z, true);
-            fireworkrocketentity2.shoot(-motion.x, -motion.y, -motion.z, -(float) Math.max(0.5F, motion.length() * 1.5), 1.0F);
-            level.addFreshEntity(fireworkrocketentity2);
-            level.addFreshEntity(fireworkrocketentity);
-            //ile amunicji zjeść
-            if (!player.isCreative()) {
-                itemStackHandler.extractItem(0, 2, false);
+                if (!player.isCreative()) {
+                    itemStackHandler.extractItem(0, 1, false);
+                }
+            } else {
+                ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompat.shooterBehaviour("launcher", item, itemStackHandler, level, player, motion, lp.x, p.y + offy, lp.z));
             }
-        }
-        else{
-            ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompat.shooterBehaviour("launcher", item, itemStackHandler, level, player, motion,x, y, z));
-            ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompat.shooterBehaviour("launcher", item, itemStackHandler, level, player, motion,x, y, z));
+        } else {
+            if (item == Items.FIREWORK_ROCKET) {
+                FireworkRocketEntity fireworkrocketentity2 = new FireworkRocketEntity(level, itemStack, rp.x, p.y + offy, rp.z, true);
+                fireworkrocketentity2.shoot(-motion.x, -motion.y, -motion.z, -(float) Math.max(0.5F, motion.length() * 1.5), 1.0F);
+                level.addFreshEntity(fireworkrocketentity2);
+            } else {
+                ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompat.shooterBehaviour("launcher", item, itemStackHandler, level, player, motion, rp.x, p.y + offy, rp.z));
+            }
         }
 
     }

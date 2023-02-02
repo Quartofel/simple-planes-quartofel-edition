@@ -290,10 +290,11 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
         Entity entity = source.getDirectEntity();
         if (entity == getControllingPassenger() && entity instanceof Player player) {
             if (upgrades.get(SimplePlanesUpgrades.SHOOTER.getId()) instanceof ShooterUpgrade shooterUpgrade) {
-                shooterUpgrade.use(player);
+                shooterUpgrade.use(player, this);
             }
             else if (upgrades.get(SimplePlanesUpgrades.LAUNCHER.getId()) instanceof LauncherUpgrade launcherUpgrade) {
-                launcherUpgrade.use(player);
+                launcherUpgrade.use(player,1.2,1,1.1, true);
+                launcherUpgrade.use(player,1.2,1,1.1, false);
             }
             else if (upgrades.get(SimplePlanesUpgrades.MINI_SHOOTER.getId()) instanceof MinigunUpgrade miniUpgrade) {
                 miniUpgrade.use(player);
@@ -384,6 +385,23 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
         }
     }
 
+    public void debugSmoke() {
+        Vec3 p = this.position();
+        double aim = Math.toRadians(this.getRotationVector().y * -1);
+        // forward vector to add
+        double fx = Math.sin(aim);
+        double fz = Math.cos(aim);
+        // leftward side vector to add or subtract
+        double sx = fz;
+        double sz = fx * -1;
+        Vec3 lp = new Vec3(p.x + (sx * 1.2) + (fx * -1), 0.0D, p.z + (sz * 1.2) + (fz * -1));
+        Vec3 rp = new Vec3(p.x - (sx * 1.2) + (fx * -1), 0.0D, p.z - (sz * 1.2) + (fz * -1));
+        this.level.addParticle(ParticleTypes.LARGE_SMOKE, lp.x, p.y + 0.5, lp.z, 0 - (fx * 0.05), 0,
+                0 - (fz * 0.05));
+        this.level.addParticle(ParticleTypes.LARGE_SMOKE, rp.x, p.y + 0.5, rp.z, 0 - (fx * 0.05), 0,
+                0 - (fz * 0.05));
+    }
+
 /*
     public float rotupdate() {
         float targetRotation = getThrottle();
@@ -410,6 +428,9 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
         yRotO = getYRot();
         xRotO = getXRot();
         prevRotationRoll = rotationRoll;
+
+        //debugSmoke();
+
         if (level.isClientSide) {
             propellerRotationOld = propellerRotationNew;
             if (isPowered()) {
