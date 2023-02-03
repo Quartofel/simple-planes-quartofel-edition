@@ -12,7 +12,6 @@ import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import xyz.przemyk.simpleplanes.misc.MathUtil;
 import xyz.przemyk.simpleplanes.setup.SimplePlanesConfig;
 import xyz.przemyk.simpleplanes.setup.SimplePlanesItems;
 import xyz.przemyk.simpleplanes.setup.SimplePlanesUpgrades;
@@ -112,7 +111,7 @@ public class HelicopterEntity extends LargePlaneEntity {
 
     @Override
     protected boolean tickOnGround(TempMotionVars tempMotionVars) {
-        float push = tempMotionVars.push;
+        //float push = tempMotionVars.push;
         super.tickOnGround(tempMotionVars);
 
         return false;
@@ -125,7 +124,7 @@ public class HelicopterEntity extends LargePlaneEntity {
 
     @Override
     public int getFuelCost() {
-        makeSmoke(0,-0.25f,0.5f);
+        makeEffect(0.25,-3.36, 1.2, true, 0);
         return SimplePlanesConfig.HELICOPTER_FUEL_COST.get();
     }
 

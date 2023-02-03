@@ -20,17 +20,19 @@ public class HeliLauncherModel extends EntityModel<PlaneEntity> {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
 
-        PartDefinition Launcher = partdefinition.addOrReplaceChild("Launcher", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 6.0F));
+        PartDefinition Shooter = partdefinition.addOrReplaceChild("Launcher", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 6.0F));
 
-        PartDefinition cube_r1 = Launcher.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(28, 0).addBox(-8.8902F, -0.5F, -5.2477F, 18.0F, 2.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(17.3902F, -23.4F, -1.1523F, 0.0F, 0.0F, 0.0F));
+        PartDefinition cube_r1 = Shooter.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(0, 0).addBox(-8.8902F, -0.5F, -5.2477F, 18.0F, 2.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(17.3902F, -23.4F, -1.1523F, 0.0F, 0.0F, 0.0F));
 
-        PartDefinition cube_r2 = Launcher.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -4.0F, -6.0F, 8.0F, 8.0F, 12.0F, new CubeDeformation(2.0F)), PartPose.offsetAndRotation(-20.5F, -16.9F, -2.9F, 0.0F, 3.1416F, 0.0F));
+        PartDefinition cube_r2 = Shooter.addOrReplaceChild("cube_r2", CubeListBuilder.create().texOffs(0, 0).addBox(-9.0F, -1.0F, -3.5F, 18.0F, 2.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-17.5F, -22.9F, -2.9F, 0.0F, 0.0F, -3.1416F));
 
-        PartDefinition cube_r3 = Launcher.addOrReplaceChild("cube_r3", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -4.0F, -6.0F, 8.0F, 8.0F, 12.0F, new CubeDeformation(2.0F)), PartPose.offsetAndRotation(20.5F, -16.9F, -2.9F, 0.0F, 3.1416F, 0.0F));
+        PartDefinition weapon = Shooter.addOrReplaceChild("weapon", CubeListBuilder.create().texOffs(0, 0).addBox(10.5F, -9.0F, -31.75F, 3.0F, 4.0F, 0.0F, new CubeDeformation(0.0F))
+                .texOffs(0, 9).addBox(-10.25F, -2.0F, 3.75F, 5.0F, 5.0F, 10.0F, new CubeDeformation(1.2F))
+                .texOffs(20, 9).mirror().addBox(35.5F, 0.25F, 8.75F, 3.0F, 5.0F, 5.0F, new CubeDeformation(0.0F)).mirror(false)
+                .texOffs(0, 9).mirror().addBox(29.5F, -2.0F, 3.75F, 5.0F, 5.0F, 10.0F, new CubeDeformation(1.2F)).mirror(false)
+                .texOffs(20, 9).addBox(-14.25F, 0.25F, 8.75F, 3.0F, 5.0F, 5.0F, new CubeDeformation(0.0F)), PartPose.offset(-12.0F, -19.0F, -11.5F));
 
-        PartDefinition cube_r4 = Launcher.addOrReplaceChild("cube_r4", CubeListBuilder.create().texOffs(28, 0).addBox(-9.0F, -1.0F, -3.5F, 18.0F, 2.0F, 7.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-17.5F, -22.9F, -2.9F, 0.0F, 0.0F, -3.1416F));
-
-        return LayerDefinition.create(meshdefinition, 128, 128);
+        return LayerDefinition.create(meshdefinition, 64, 64);
     }
 
     @Override

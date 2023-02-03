@@ -60,8 +60,8 @@ public class ClientEventHandler {
     public static KeyMapping pitchDown;
     public static KeyMapping yawRight;
     public static KeyMapping yawLeft;
-    public static KeyMapping rollRight;
-    public static KeyMapping rollLeft;
+    //public static KeyMapping rollRight;
+    //public static KeyMapping rollLeft;
 
     static {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();

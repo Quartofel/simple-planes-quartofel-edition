@@ -100,7 +100,8 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
     private Block planksMaterial;
     private int damageTimeout;
     public int notMovingTime;
-    public float ias;
+    public int shootTimer;
+    public boolean shooted = false;
     public int goldenHeartsTimeout = 0;
 
     private final int networkUpdateInterval;
@@ -284,21 +285,72 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
             SimplePlanesNetworking.INSTANCE.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new UpdateUpgradePacket(SimplePlanesRegistries.UPGRADE_TYPES.get().getKey(upgradeType), getId(), (ServerLevel) level, true));
         }
     }
+    public void pew(Player player){
+        double offx;
+        double offz;
+        double offy;
+
+        if (upgrades.get(SimplePlanesUpgrades.SHOOTER.getId()) instanceof ShooterUpgrade shooterUpgrade && timer(2)) {
+
+            if (timer(2) && shooted) {
+                shooted = false;
+                return;
+            }
+
+            if(this.getType() == SimplePlanesEntities.PLANE.get()){
+                offx = 0.1;
+                offz = 1;
+                offy = 1.1;
+            }
+            else if(this.getType() == SimplePlanesEntities.LARGE_PLANE.get()){
+                offx = 0;
+                offz = 0;
+                offy = 0;
+            }
+            else{
+                offx = 1.2;
+                offz = 0.5;
+                offy = 1.35;
+            }
+            shooterUpgrade.use(player,offx,offz,offy, true);
+            shooterUpgrade.use(player,offx,offz,offy, false);
+            shooted = true;
+        }
+        else if (upgrades.get(SimplePlanesUpgrades.LAUNCHER.getId()) instanceof LauncherUpgrade launcherUpgrade && timer(10)) {
+            if (timer(10) && shooted) {
+                shooted = false;
+                return;
+            }
+
+            if(this.getType() == SimplePlanesEntities.PLANE.get()){
+                offx = 0.1;
+                offz = 1;
+                offy = 1.1;
+            }
+            else if(this.getType() == SimplePlanesEntities.LARGE_PLANE.get()){
+                offx = 0;
+                offz = 0;
+                offy = 0;
+            }
+            else{
+                offx = 1.32;
+                offz = -1.35;
+                offy = 1.3;
+            }
+            launcherUpgrade.use(player,offx,offz,offy, true);
+            launcherUpgrade.use(player,offx,offz,offy, false);
+            shooted = true;
+        }
+        else if (upgrades.get(SimplePlanesUpgrades.MINI_SHOOTER.getId()) instanceof MinigunUpgrade miniUpgrade) {
+            miniUpgrade.use(player);
+        }
+    }
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
         Entity entity = source.getDirectEntity();
         if (entity == getControllingPassenger() && entity instanceof Player player) {
-            if (upgrades.get(SimplePlanesUpgrades.SHOOTER.getId()) instanceof ShooterUpgrade shooterUpgrade) {
-                shooterUpgrade.use(player, this);
-            }
-            else if (upgrades.get(SimplePlanesUpgrades.LAUNCHER.getId()) instanceof LauncherUpgrade launcherUpgrade) {
-                launcherUpgrade.use(player,1.2,1,1.1, true);
-                launcherUpgrade.use(player,1.2,1,1.1, false);
-            }
-            else if (upgrades.get(SimplePlanesUpgrades.MINI_SHOOTER.getId()) instanceof MinigunUpgrade miniUpgrade) {
-                miniUpgrade.use(player);
-            }
+            pew(player);
             return false;
         }
 
@@ -368,20 +420,38 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
         return true;
     }
 
-    public void makeSmoke(float xpos, float ypos, float zpos) {
+    public void makeEffect(double offx, double offz, double offy, boolean left, int effect) {
         if (isPowered() && engineUpgrade instanceof FurnaceEngineUpgrade) {
             double aim = Math.toRadians(this.getRotationVector().y * -1);
             Vec3 p = this.position();
             double fx = Math.sin(aim);
             double fz = Math.cos(aim);
-            double sx = fz;
             double sz = fx * -1;
-            Vec3 lp = new Vec3(p.x + (sx * 0.32) + (fx * -1.9), 0.0D, p.z + (sz * 0.32) + (fz * -1.9));
-            Vec3 rp = new Vec3(p.x - (sx * 0.32) + (fx * -1.9), 0.0D, p.z - (sz * 0.32) + (fz * -1.9));
-            this.level.addParticle(ParticleTypes.SMOKE, lp.x + xpos, p.y + ypos, lp.z + zpos, 0 - (fx * 0.05), 0,
-                    0 - (fz * 0.05));
-            this.level.addParticle(ParticleTypes.SMOKE, rp.x + xpos, p.y + ypos, rp.z + zpos, 0 - (fx * 0.05), 0,
-                    0 - (fz * 0.05));
+            Vec3 lp = new Vec3(p.x + (fz * offx) + (fx * offz), 0.0D, p.z + (sz * offx) + (fz * offz));
+            Vec3 rp = new Vec3(p.x - (fz * offx) + (fx * offz), 0.0D, p.z - (sz * offx) + (fz * offz));
+            switch(effect){
+                case 1:
+                    if(left) {
+                        this.level.addParticle(ParticleTypes.POOF, lp.x, p.y + offy, lp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
+                    } else {
+                        this.level.addParticle(ParticleTypes.POOF, rp.x, p.y + offy, rp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
+                    }
+                    break;
+                case 2:
+                    if(left) {
+                        this.level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, lp.x, p.y + offy, lp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
+                    } else {
+                        this.level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, rp.x, p.y + offy, rp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
+                    }
+                    break;
+                default:
+                    if(left) {
+                        this.level.addParticle(ParticleTypes.SMOKE, lp.x, p.y + offy, lp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
+                    } else {
+                        this.level.addParticle(ParticleTypes.SMOKE, rp.x, p.y + offy, rp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
+                    }
+
+            }
         }
     }
 
@@ -392,10 +462,9 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
         double fx = Math.sin(aim);
         double fz = Math.cos(aim);
         // leftward side vector to add or subtract
-        double sx = fz;
         double sz = fx * -1;
-        Vec3 lp = new Vec3(p.x + (sx * 1.2) + (fx * -1), 0.0D, p.z + (sz * 1.2) + (fz * -1));
-        Vec3 rp = new Vec3(p.x - (sx * 1.2) + (fx * -1), 0.0D, p.z - (sz * 1.2) + (fz * -1));
+        Vec3 lp = new Vec3(p.x + (fz * 1.2) + (fx * -1), 0.0D, p.z + (sz * 1.2) + (fz * -1));
+        Vec3 rp = new Vec3(p.x - (fz * 1.2) + (fx * -1), 0.0D, p.z - (sz * 1.2) + (fz * -1));
         this.level.addParticle(ParticleTypes.LARGE_SMOKE, lp.x, p.y + 0.5, lp.z, 0 - (fx * 0.05), 0,
                 0 - (fz * 0.05));
         this.level.addParticle(ParticleTypes.LARGE_SMOKE, rp.x, p.y + 0.5, rp.z, 0 - (fx * 0.05), 0,
@@ -418,10 +487,30 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
         return propellerRotationNew;
     }
 */
+
+    public boolean timer(int delay){
+
+        if(shootTimer == 0){
+            shootTimer = this.tickCount;
+            return true;
+        }
+        else {
+            int timepassed = this.tickCount - shootTimer;
+            if(timepassed < delay){
+                return false;
+            }
+            else {
+                shootTimer = 0;
+                return true;
+
+            }
+        }
+    }
+
     @Override
     public void tick() {
         super.tick();
-        ias = (float) (Math.sqrt(getHorizontalDistanceSqr(getDeltaMovement())) + Math.sqrt(getVerticalDistanceSqr(getDeltaMovement())));
+
         if (Double.isNaN(getDeltaMovement().length())) {
             setDeltaMovement(Vec3.ZERO);
         }
@@ -625,7 +714,7 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
     }
 
     public int getFuelCost() {
-        makeSmoke(0,0,1);
+        makeEffect(0,0,1, true, 0);
         return SimplePlanesConfig.PLANE_FUEL_COST.get();
     }
 
@@ -791,6 +880,9 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
     protected boolean tickOnGround(TempMotionVars tempMotionVars) {
         if (getDeltaMovement().lengthSqr() < 0.01 && getOnGround()) {
             notMovingTime += 1;
+            setPitchUp((byte) 0);
+            setYawRight((byte) 0);
+
         } else {
             notMovingTime = 0;
         }
@@ -1144,13 +1236,11 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
                 }
             }
         }
-/*
+
         if (getPassengers().size() == 0) {
             setThrottle((byte) 0);
-            setPitchUp((byte) 0);
-            setYawRight((byte) 0);
         }
-*/
+
         return super.getDismountLocationForPassenger(livingEntity);
     }
 

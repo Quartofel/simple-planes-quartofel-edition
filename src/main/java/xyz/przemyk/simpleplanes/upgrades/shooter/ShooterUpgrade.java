@@ -3,6 +3,7 @@ package xyz.przemyk.simpleplanes.upgrades.shooter;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
@@ -38,23 +39,33 @@ public class ShooterUpgrade extends Upgrade {
         super(SimplePlanesUpgrades.SHOOTER.get(), planeEntity);
     }
 
-
-    public void use(Player player, PlaneEntity plane) {
+    public void use(Player player, double offx, double offz, double offy, boolean left) {
         Vector3f motion1 = planeEntity.transformPos(new Vector3f(0, -0.25f, (float) (1 + planeEntity.getDeltaMovement().length())));
         Vec3 motion = new Vec3(motion1);
         Level level = player.level;
 
-        Vector3f pos = planeEntity.transformPos(new Vector3f(0.0f, 1.8f, 2.0f));
-        updateClient();
+        double aim = Math.toRadians(planeEntity.getRotationVector().y * -1);
+        Vec3 p = planeEntity.position();
+        double fx = Math.sin(aim);
+        double fz = Math.cos(aim);
+        double sz = fx * -1;
+        Vec3 lp = new Vec3(p.x + (fz * offx) + (fx * offz), 0.0D, p.z + (sz * offx) + (fz * offz));
+        Vec3 rp = new Vec3(p.x - (fz * offx) + (fx * offz), 0.0D, p.z - (sz * offx) + (fz * offz));
 
-        double x = pos.x() + planeEntity.getX();
-        double y = pos.y() + planeEntity.getY();
-        double z = pos.z() + planeEntity.getZ();
+        updateClient();
 
         ItemStack itemStack = itemStackHandler.getStackInSlot(0);
         Item item = itemStack.getItem();
 
-        ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompat.shooterBehaviour("highcal", item, itemStackHandler, level, player, motion, x, y, z));
+        if(left) {
+            ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompat.shooterBehaviour("highcal", item, itemStackHandler, level, player, motion, lp.x, p.y + offy, lp.z));
+            level.addParticle(ParticleTypes.POOF, lp.x, p.y + offy, lp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
+        }
+        else {
+            ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompat.shooterBehaviour("highcal", item, itemStackHandler, level, player, motion, rp.x, p.y + offy, rp.z));
+            level.addParticle(ParticleTypes.POOF, rp.x, p.y + offy, rp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
+        }
+
 
     }
 

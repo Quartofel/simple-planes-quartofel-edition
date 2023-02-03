@@ -80,7 +80,7 @@ public class LargePlaneEntity extends PlaneEntity {
 
     @Override
     public int getFuelCost() {
-        makeSmoke(0,0,0);
+        makeEffect(0,0,0, true, 0);
         return SimplePlanesConfig.LARGE_PLANE_FUEL_COST.get();
     }
 
