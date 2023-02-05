@@ -3,6 +3,7 @@ package xyz.przemyk.simpleplanes.entities;
 import javax.annotation.Nullable;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
+import malte0811.modelsplitter.math.Vec3d;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
@@ -32,7 +33,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -387,14 +387,10 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
         } else if (source == SimplePlanesMod.DAMAGE_SOURCE_PLANE_CRASH) {
             explode();
             kill();
-            if (level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-                //dropItem();
-            }
+
         } else if (getOnGround() && getHealth() <= 0) {
             kill();
-            if (level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-                //dropItem();
-            }
+
         }
         return true;
     }
@@ -439,19 +435,35 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
     }
 
     public void debugSmoke() {
-        Vec3 p = this.position();
-        double aim = Math.toRadians(this.getRotationVector().y * -1);
-        // forward vector to add
-        double fx = Math.sin(aim);
-        double fz = Math.cos(aim);
-        // leftward side vector to add or subtract
-        double sz = fx * -1;
-        Vec3 lp = new Vec3(p.x + (fz * 1.2) + (fx * -1), 0.0D, p.z + (sz * 1.2) + (fz * -1));
-        Vec3 rp = new Vec3(p.x - (fz * 1.2) + (fx * -1), 0.0D, p.z - (sz * 1.2) + (fz * -1));
-        this.level.addParticle(ParticleTypes.LARGE_SMOKE, lp.x, p.y + 0.5, lp.z, 0 - (fx * 0.05), 0,
-                0 - (fz * 0.05));
-        this.level.addParticle(ParticleTypes.LARGE_SMOKE, rp.x, p.y + 0.5, rp.z, 0 - (fx * 0.05), 0,
-                0 - (fz * 0.05));
+        float pitch = this.getRotationVector().x;
+        float yaw = this.getRotationVector().y;
+        float roll = rotationRoll;
+        float distance = 0;
+
+//# calculate components of a perpendicular vector (relative to x-axis)
+        double cx = Math.cos((pitch * 3.14) / 180) * Math.sin((yaw * 3.14) / 180) * distance;
+        double cy = Math.sin((pitch * 3.14) / 180) * distance;
+        double cz = Math.cos((pitch * 3.14) / 180) * Math.cos((yaw * 3.14) / 180) * distance;
+
+//# calculate components of a perpendicular vector (relative to y-axis)
+        double dx = Math.cos((roll * 3.14) / 180) * Math.sin((yaw * 3.14) / 180) * distance;
+        double dy = Math.sin((roll * 3.14) / 180) * distance;
+        double dz = Math.cos((roll * 3.14) / 180) * Math.cos((yaw * 3.14) / 180) * distance;
+        //double aim = Math.toRadians(this.getRotationVector().y * -1);
+        //Vec3 p = this.position();
+        //double fx = Math.sin(aim);
+        //double fz = Math.cos(aim);
+        //double sz = fx * -1;
+        //Vec3 lp = new Vec3(p.x + (fz * offx) + (fx * offz), 0.0D, p.z + (sz * offx) + (fz * offz));
+        double rotx = this.position().x + cx + dx;
+        double roty = this.position().y + cy + dy;
+        double rotz = this.position().z + cz + dz;
+
+//# print the results
+        this.level.addParticle(ParticleTypes.LARGE_SMOKE, rotx, roty, rotz, 0, 0,
+                0);
+        //this.level.addParticle(ParticleTypes.LARGE_SMOKE, vecrot.x, vecrot.y, vecrot.z-2, 0, 0,
+        //        0);
     }
 
 /*
@@ -497,6 +509,7 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
     @Override
     public void tick() {
         super.tick();
+        debugSmoke();
         Entity entity = getControllingPassenger();
         if (moveHeliUpKey.isDown() && entity instanceof Player player) {pew(player);}
         if (Double.isNaN(getDeltaMovement().length())) {
