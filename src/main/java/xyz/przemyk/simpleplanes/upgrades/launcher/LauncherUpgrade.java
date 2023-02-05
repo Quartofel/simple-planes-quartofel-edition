@@ -62,9 +62,8 @@ public class LauncherUpgrade extends Upgrade {
             if (item == Items.FIREWORK_ROCKET) {
                 FireworkRocketEntity fireworkrocketentity = new FireworkRocketEntity(level, itemStack, lp.x, p.y + offy, lp.z, true);
                 fireworkrocketentity.shoot(-motion.x, -motion.y, -motion.z, -(float) Math.max(0.5F, motion.length() * 1.5), 1.0F);
-                level.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, lp.x, p.y + offy, lp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
                 level.addFreshEntity(fireworkrocketentity);
-
+                level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, rp.x, p.y + offy, rp.z, 0, 0.1, 0);
                 if (!player.isCreative()) {
                     itemStackHandler.extractItem(0, 1, false);
                 }
@@ -75,8 +74,8 @@ public class LauncherUpgrade extends Upgrade {
             if (item == Items.FIREWORK_ROCKET) {
                 FireworkRocketEntity fireworkrocketentity = new FireworkRocketEntity(level, itemStack, rp.x, p.y + offy, rp.z, true);
                 fireworkrocketentity.shoot(-motion.x, -motion.y, -motion.z, -(float) Math.max(0.5F, motion.length() * 1.5), 1.0F);
-                level.addParticle(ParticleTypes.CAMPFIRE_SIGNAL_SMOKE, rp.x, p.y + offy, rp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
                 level.addFreshEntity(fireworkrocketentity);
+                level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, rp.x, p.y + offy, rp.z, 0, 0.1, 0);
             } else {
                 ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompat.shooterBehaviour("launcher", item, itemStackHandler, level, player, motion, rp.x, p.y + offy, rp.z));
             }

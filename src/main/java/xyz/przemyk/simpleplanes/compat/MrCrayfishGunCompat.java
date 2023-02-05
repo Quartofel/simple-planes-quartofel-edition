@@ -11,6 +11,7 @@ import com.mrcrayfish.guns.item.GunItem;
 import com.mrcrayfish.guns.item.IAmmo;
 import com.mrcrayfish.guns.network.PacketHandler;
 import com.mrcrayfish.guns.network.message.S2CMessageGunSound;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -52,12 +53,15 @@ public class MrCrayfishGunCompat {
             ItemStack gunDummy;
             if (ModItems.BASIC_BULLET.get() == ammoItem && shooterType == "gatling") {
                 gunDummy = minigunDummy;
+                level.addParticle(ParticleTypes.POOF, x, y, z, 0, 0.1, 0);
             }
             else if (ModItems.ADVANCED_AMMO.get() == ammoItem && shooterType == "highcal") {
                 gunDummy = heavyRifleDummy;
+                level.addParticle(ParticleTypes.POOF, x, y, z, 0, 0.1, 0);
             }
             else if (ModItems.MISSILE.get() == ammoItem && shooterType == "launcher") {
                 gunDummy = bazookaDummy;
+                level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, x, y, z, 0, 0.1, 0);
             }
             else {
                 return;
@@ -74,6 +78,7 @@ public class MrCrayfishGunCompat {
             double speed = gun.getProjectile().getSpeed();
             projectile.setDeltaMovement(motion.x * speed, motion.y * speed, motion.z * speed);
             level.addFreshEntity(projectile);
+
 
             if (!level.isClientSide) {
                 ResourceLocation fireSound = gun.getSounds().getFire();

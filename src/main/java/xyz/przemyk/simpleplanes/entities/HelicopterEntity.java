@@ -2,9 +2,6 @@ package xyz.przemyk.simpleplanes.entities;
 
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -22,7 +19,7 @@ import static xyz.przemyk.simpleplanes.misc.MathUtil.lerpAngle;
 //numero tres in the grand pecking order
 public class HelicopterEntity extends LargePlaneEntity {
 
-    public static final EntityDataAccessor<Boolean> MOVE_UP = SynchedEntityData.defineId(HelicopterEntity.class, EntityDataSerializers.BOOLEAN);
+
     public HelicopterEntity(EntityType<? extends HelicopterEntity> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
     }
@@ -65,7 +62,7 @@ public class HelicopterEntity extends LargePlaneEntity {
                 yawSpeed -= 0.5f * getRotationSpeedMultiplier();
             } else {
                 if (yawSpeed < 0) {
-                    yawSpeed += 0.5f * getRotationSpeedMultiplier();
+                    yawSpeed += 0.75f * getRotationSpeedMultiplier();
                 } else if (yawSpeed > 0) {
                     yawSpeed -= 0.75f * getRotationSpeedMultiplier();
                 }
@@ -124,7 +121,7 @@ public class HelicopterEntity extends LargePlaneEntity {
 
     @Override
     public int getFuelCost() {
-        makeEffect(0.25,-3.36, 1.2, true, 0);
+        makeEffect(0.25,-3.36, 1.2, 0);
         return SimplePlanesConfig.HELICOPTER_FUEL_COST.get();
     }
 
@@ -188,8 +185,6 @@ public class HelicopterEntity extends LargePlaneEntity {
         return SimplePlanesConfig.HELI_CAMERA_DISTANCE_MULTIPLIER.get();
     }
 
-    public void setMoveUp(boolean up) {
-        entityData.set(MOVE_UP, up);
-    }
+
 
 }

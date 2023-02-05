@@ -80,7 +80,11 @@ public class LargePlaneEntity extends PlaneEntity {
 
     @Override
     public int getFuelCost() {
-        makeEffect(0,0,0, true, 0);
+        makeEffect(2.05,-2,1.85, 0);
+        makeEffect(1.35,-2,1.85, 0);
+        makeEffect(-2.05,-2,1.85, 0);
+        makeEffect(-1.35,-2,1.85, 0);
+
         return SimplePlanesConfig.LARGE_PLANE_FUEL_COST.get();
     }
 
@@ -112,7 +116,7 @@ public class LargePlaneEntity extends PlaneEntity {
             }
             switch (index) {
                 case 1 -> {
-                    Vector3f pos = transformPos(new Vector3f(0, (float) (getPassengersRidingOffset() + getEntityYOffset(passenger)), 0));
+                    Vector3f pos = transformPos(new Vector3f(0, (float) (getPassengersRidingOffset() + getEntityYOffset(passenger)), -1.8f));
                     passenger.setPos(getX() + pos.x(), getY() + pos.y(), getZ() + pos.z());
                 }
                 case 2 -> {
@@ -120,7 +124,7 @@ public class LargePlaneEntity extends PlaneEntity {
                     passenger.setPos(getX() + pos.x(), getY() + pos.y(), getZ() + pos.z());
                 }
                 case 3 -> {
-                    Vector3f pos = transformPos(new Vector3f(0, (float) (getPassengersRidingOffset() + getEntityYOffset(passenger)), -1.8f));
+                    Vector3f pos = transformPos(new Vector3f(0, (float) (getPassengersRidingOffset() + getEntityYOffset(passenger)), 0));
                     passenger.setPos(getX() + pos.x(), getY() + pos.y(), getZ() + pos.z());
                 }
             }

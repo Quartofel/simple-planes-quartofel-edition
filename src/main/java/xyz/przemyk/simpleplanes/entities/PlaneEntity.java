@@ -68,6 +68,7 @@ import javax.annotation.Nonnull;
 import java.util.*;
 
 import static net.minecraft.util.Mth.wrapDegrees;
+import static xyz.przemyk.simpleplanes.client.ClientEventHandler.moveHeliUpKey;
 import static xyz.przemyk.simpleplanes.misc.MathUtil.*;
 
 //numero uno in the grand pecking order
@@ -83,6 +84,7 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
     public static final EntityDataAccessor<Float> THROTTLE = SynchedEntityData.defineId(PlaneEntity.class, EntityDataSerializers.FLOAT);
     public static final EntityDataAccessor<Byte> PITCH_UP = SynchedEntityData.defineId(PlaneEntity.class, EntityDataSerializers.BYTE);
     public static final EntityDataAccessor<Byte> YAW_RIGHT = SynchedEntityData.defineId(PlaneEntity.class, EntityDataSerializers.BYTE);
+    public static final EntityDataAccessor<Boolean> MOVE_UP = SynchedEntityData.defineId(PlaneEntity.class, EntityDataSerializers.BOOLEAN);
     public static final int MAX_THROTTLE = 5;
     public Quaternion Q_Client = new Quaternion(Quaternion.ONE);
     public Quaternion Q_Prev = new Quaternion(Quaternion.ONE);
@@ -365,7 +367,7 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
         setTimeSinceHit(20);
         setDamageTaken(getDamageTaken() + 10 * amount);
 
-        if (isInvulnerableTo(source) || damageTimeout > 0) {
+        if (getDamageTaken() < 2 || isInvulnerableTo(source) || damageTimeout > 0) {
             return false;
         }
         if (level.isClientSide || isRemoved()) {
@@ -386,12 +388,12 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
             explode();
             kill();
             if (level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-                dropItem();
+                //dropItem();
             }
         } else if (getOnGround() && getHealth() <= 0) {
             kill();
             if (level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-                dropItem();
+                //dropItem();
             }
         }
         return true;
@@ -420,7 +422,7 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
         return true;
     }
 
-    public void makeEffect(double offx, double offz, double offy, boolean left, int effect) {
+    public void makeEffect(double offx, double offz, double offy, int effect) {
         if (isPowered() && engineUpgrade instanceof FurnaceEngineUpgrade) {
             double aim = Math.toRadians(this.getRotationVector().y * -1);
             Vec3 p = this.position();
@@ -428,29 +430,10 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
             double fz = Math.cos(aim);
             double sz = fx * -1;
             Vec3 lp = new Vec3(p.x + (fz * offx) + (fx * offz), 0.0D, p.z + (sz * offx) + (fz * offz));
-            Vec3 rp = new Vec3(p.x - (fz * offx) + (fx * offz), 0.0D, p.z - (sz * offx) + (fz * offz));
-            switch(effect){
-                case 1:
-                    if(left) {
-                        this.level.addParticle(ParticleTypes.POOF, lp.x, p.y + offy, lp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
-                    } else {
-                        this.level.addParticle(ParticleTypes.POOF, rp.x, p.y + offy, rp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
-                    }
-                    break;
-                case 2:
-                    if(left) {
-                        this.level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, lp.x, p.y + offy, lp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
-                    } else {
-                        this.level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, rp.x, p.y + offy, rp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
-                    }
-                    break;
-                default:
-                    if(left) {
-                        this.level.addParticle(ParticleTypes.SMOKE, lp.x, p.y + offy, lp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
-                    } else {
-                        this.level.addParticle(ParticleTypes.SMOKE, rp.x, p.y + offy, rp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
-                    }
-
+            switch (effect) {
+                case 1 -> this.level.addParticle(ParticleTypes.POOF, lp.x, p.y + offy, lp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
+                case 2 -> this.level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, lp.x, p.y + offy, lp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
+                default -> this.level.addParticle(ParticleTypes.SMOKE, lp.x, p.y + offy, lp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
             }
         }
     }
@@ -507,10 +490,15 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
         }
     }
 
+    public void setMoveUp(boolean up) {
+        entityData.set(MOVE_UP, up);
+    }
+
     @Override
     public void tick() {
         super.tick();
-
+        Entity entity = getControllingPassenger();
+        if (moveHeliUpKey.isDown() && entity instanceof Player player) {pew(player);}
         if (Double.isNaN(getDeltaMovement().length())) {
             setDeltaMovement(Vec3.ZERO);
         }
@@ -581,8 +569,6 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
 
         EulerAngles anglesOld = toEulerAngles(q).copy();
 
-        Vec3 oldMotion = getDeltaMovement();
-
         if (level.isClientSide && isPowered() && getThrottle() > 0) {
             PlaneSound.tryToPlay(this);
         }
@@ -612,10 +598,7 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
 
         tickUpgrades();
 
-        //made so plane fully stops when moves slow, removing the slipperiness effect
-        if (onGroundTicks > -50 && oldMotion.length() < 0.002 && getDeltaMovement().length() < 0.002) {
-            setDeltaMovement(Vec3.ZERO);
-        }
+
         reapplyPosition();
 
         if (!onGround || getHorizontalDistanceSqr(getDeltaMovement()) > (double) 1.0E-5F || (tickCount + getId()) % 4 == 0) {
@@ -714,7 +697,7 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
     }
 
     public int getFuelCost() {
-        makeEffect(0,0,1, true, 0);
+        makeEffect(0,0,1, 0);
         return SimplePlanesConfig.PLANE_FUEL_COST.get();
     }
 

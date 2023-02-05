@@ -59,11 +59,9 @@ public class ShooterUpgrade extends Upgrade {
 
         if(left) {
             ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompat.shooterBehaviour("highcal", item, itemStackHandler, level, player, motion, lp.x, p.y + offy, lp.z));
-            level.addParticle(ParticleTypes.POOF, lp.x, p.y + offy, lp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
         }
         else {
             ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompat.shooterBehaviour("highcal", item, itemStackHandler, level, player, motion, rp.x, p.y + offy, rp.z));
-            level.addParticle(ParticleTypes.POOF, rp.x, p.y + offy, rp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
         }
 
 
