@@ -260,6 +260,9 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
 
     protected boolean tryToAddUpgrade(Player playerEntity, ItemStack itemStack) {
         Optional<UpgradeType> upgradeTypeOptional = SimplePlanesUpgrades.getUpgradeFromItem(itemStack.getItem());
+        if(upgradeTypeOptional == Optional.of(SimplePlanesUpgrades.ARMOR.get())){
+            return false;
+        }
         return upgradeTypeOptional.map(upgradeType -> {
             if (canAddUpgrade(upgradeType)) {
                 Upgrade upgrade = upgradeType.instanceSupplier.apply(this);

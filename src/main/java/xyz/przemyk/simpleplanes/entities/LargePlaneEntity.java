@@ -1,6 +1,7 @@
 package xyz.przemyk.simpleplanes.entities;
 
 import com.mojang.math.Vector3f;
+import com.mojang.serialization.Decoder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySelector;
 import net.minecraft.world.entity.EntityType;
@@ -18,7 +19,9 @@ import xyz.przemyk.simpleplanes.setup.SimplePlanesUpgrades;
 import xyz.przemyk.simpleplanes.upgrades.LargeUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.Upgrade;
 import xyz.przemyk.simpleplanes.upgrades.UpgradeType;
+import xyz.przemyk.simpleplanes.upgrades.launcher.LauncherUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.payload.PayloadUpgrade;
+import xyz.przemyk.simpleplanes.upgrades.shooter.ShooterUpgrade;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,11 +51,16 @@ public class LargePlaneEntity extends PlaneEntity {
 
     @Override
     public boolean tryToAddUpgrade(Player playerEntity, ItemStack itemStack) {
+        //if(itemStack = SimplePlanesUpgrades.SHOOTER.get() || itemStack = SimplePlanesUpgrades.LAUNCHER.get() || itemStack = SimplePlanesUpgrades.ARMOR.get()){}
+
         if (super.tryToAddUpgrade(playerEntity, itemStack)) {
             return true;
         }
         if (!hasLargeUpgrade && getPassengers().size() < 2) {
             Optional<UpgradeType> upgradeTypeOptional = SimplePlanesUpgrades.getLargeUpgradeFromItem(itemStack.getItem());
+            if(upgradeTypeOptional == Optional.of(SimplePlanesUpgrades.SHOOTER.get()) || upgradeTypeOptional == Optional.of(SimplePlanesUpgrades.LAUNCHER.get())){
+                return false;
+            }
             if (upgradeTypeOptional.map(upgradeType -> {
                 if (canAddUpgrade(upgradeType)) {
                     Upgrade upgrade = upgradeType.instanceSupplier.apply(this);
