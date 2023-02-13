@@ -84,6 +84,14 @@ public class LargePlaneEntity extends PlaneEntity {
         makeEffect(1.35,-2,1.85, 0);
         makeEffect(-2.05,-2,1.85, 0);
         makeEffect(-1.35,-2,1.85, 0);
+        if(getHealth() < getMaxHealth()/4){
+            makeEffect(1.9,-2,1.85, 3);
+            makeEffect(-1.9,-2,1.85, 3);
+        }
+        if(getHealth() < getMaxHealth()/2){
+            makeEffect(1.9,-2,1.85, 1);
+            makeEffect(-1.9,-2,1.85, 1);
+        }
 
         return SimplePlanesConfig.LARGE_PLANE_FUEL_COST.get();
     }

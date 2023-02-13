@@ -40,45 +40,43 @@ public class LauncherUpgrade extends Upgrade {
         super(SimplePlanesUpgrades.LAUNCHER.get(), planeEntity);
     }
 
-    public void use(Player player, double offx, double offz, double offy, boolean left) {
+    //handling the use of plane suspended armaments
+    public void use(Player player, double offx, double offz, double offy) {
+        //I guess it's for adding plane velocity to projectile velocity?
         Vector3f motion1 = planeEntity.transformPos(new Vector3f(0, -0.25f, (float) (1 + planeEntity.getDeltaMovement().length())));
         Vec3 motion = new Vec3(motion1);
         Level level = player.level;
 
-        double aim = Math.toRadians(planeEntity.getRotationVector().y * -1);
-        Vec3 p = planeEntity.position();
-        double fx = Math.sin(aim);
-        double fz = Math.cos(aim);
-        double sz = fx * -1;
-        Vec3 lp = new Vec3(p.x + (fz * offx) + (fx * offz), 0.0D, p.z + (sz * offx) + (fz * offz));
-        Vec3 rp = new Vec3(p.x - (fz * offx) + (fx * offz), 0.0D, p.z - (sz * offx) + (fz * offz));
+
 
         updateClient();
 
         ItemStack itemStack = itemStackHandler.getStackInSlot(0);
         Item item = itemStack.getItem();
 
-        if(left) {
-            if (item == Items.FIREWORK_ROCKET) {
-                FireworkRocketEntity fireworkrocketentity = new FireworkRocketEntity(level, itemStack, lp.x, p.y + offy, lp.z, true);
-                fireworkrocketentity.shoot(-motion.x, -motion.y, -motion.z, -(float) Math.max(0.5F, motion.length() * 1.5), 1.0F);
-                level.addFreshEntity(fireworkrocketentity);
-                level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, rp.x, p.y + offy, rp.z, 0, 0.1, 0);
-                if (!player.isCreative()) {
-                    itemStackHandler.extractItem(0, 1, false);
-                }
-            } else {
-                ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompat.shooterBehaviour("launcher", item, itemStackHandler, level, player, motion, lp.x, p.y + offy, lp.z));
+
+        //rotating offset position around the planeEntity
+        Vector3f transpos = planeEntity.transformPos(new Vector3f((float) offx, (float) offy,(float) offz));
+        //if it's a firework, launch a firework
+        if (item == Items.FIREWORK_ROCKET) {
+
+            FireworkRocketEntity fireworkrocketentity = new FireworkRocketEntity(level, itemStack,
+                    planeEntity.getX() + transpos.x(), planeEntity.getY() + transpos.y(), planeEntity.getZ() + transpos.z(),
+                    true);
+            fireworkrocketentity.shoot(-motion.x, -motion.y, -motion.z,
+                    -(float) Math.max(0.5F, motion.length() * 1.5), 1.0F);
+            level.addFreshEntity(fireworkrocketentity);
+            level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE,
+                    planeEntity.getX() + transpos.x(), planeEntity.getY() + transpos.y(), planeEntity.getZ() + transpos.z(),
+                    0, 0.1, 0);
+            if (!player.isCreative()) {
+                itemStackHandler.extractItem(0, 1, false);
             }
-        } else {
-            if (item == Items.FIREWORK_ROCKET) {
-                FireworkRocketEntity fireworkrocketentity = new FireworkRocketEntity(level, itemStack, rp.x, p.y + offy, rp.z, true);
-                fireworkrocketentity.shoot(-motion.x, -motion.y, -motion.z, -(float) Math.max(0.5F, motion.length() * 1.5), 1.0F);
-                level.addFreshEntity(fireworkrocketentity);
-                level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, rp.x, p.y + offy, rp.z, 0, 0.1, 0);
-            } else {
-                ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompat.shooterBehaviour("launcher", item, itemStackHandler, level, player, motion, rp.x, p.y + offy, rp.z));
-            }
+        }
+            //if it's not a firework, try to launch a missile (checks if ammo item is correct is handled by MrCrayfishGunCompat)
+        else {
+            ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompat.shooterBehaviour("launcher", item, itemStackHandler, level, player, motion,
+                    planeEntity.getX() + transpos.x(), planeEntity.getY() + transpos.y(), planeEntity.getZ() + transpos.z()));
         }
 
     }

@@ -122,6 +122,12 @@ public class HelicopterEntity extends LargePlaneEntity {
     @Override
     public int getFuelCost() {
         makeEffect(0.25,-3.36, 1.2, 0);
+        if(getHealth() < getMaxHealth()/4){
+            makeEffect(0.25,-3.36,0.6, 3);
+        }
+        if(getHealth() < getMaxHealth()/2){
+            makeEffect(0.25,-3.36,0.6, 1);
+        }
         return SimplePlanesConfig.HELICOPTER_FUEL_COST.get();
     }
 

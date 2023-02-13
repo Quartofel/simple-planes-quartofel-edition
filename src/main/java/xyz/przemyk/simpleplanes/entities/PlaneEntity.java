@@ -3,7 +3,6 @@ package xyz.przemyk.simpleplanes.entities;
 import javax.annotation.Nullable;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
-import malte0811.modelsplitter.math.Vec3d;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
@@ -59,9 +58,7 @@ import xyz.przemyk.simpleplanes.upgrades.UpgradeType;
 import xyz.przemyk.simpleplanes.upgrades.armor.ArmorUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.booster.BoosterUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.engines.EngineUpgrade;
-import xyz.przemyk.simpleplanes.upgrades.engines.furnace.FurnaceEngineUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.launcher.LauncherUpgrade;
-import xyz.przemyk.simpleplanes.upgrades.shooter.MinigunUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.shooter.ShooterUpgrade;
 
 import javax.annotation.Nonnull;
@@ -287,14 +284,15 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
             SimplePlanesNetworking.INSTANCE.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new UpdateUpgradePacket(SimplePlanesRegistries.UPGRADE_TYPES.get().getKey(upgradeType), getId(), (ServerLevel) level, true));
         }
     }
+
     public void pew(Player player){
         double offx;
         double offz;
         double offy;
 
-        if (upgrades.get(SimplePlanesUpgrades.SHOOTER.getId()) instanceof ShooterUpgrade shooterUpgrade && timer(2)) {
+        if (upgrades.get(SimplePlanesUpgrades.SHOOTER.getId()) instanceof ShooterUpgrade shooterUpgrade && timer(5)) {
 
-            if (timer(2) && shooted) {
+            if (timer(5) && shooted) {
                 shooted = false;
                 return;
             }
@@ -314,8 +312,8 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
                 offz = 0.5;
                 offy = 1.35;
             }
-            shooterUpgrade.use(player,offx,offz,offy, true);
-            shooterUpgrade.use(player,offx,offz,offy, false);
+            shooterUpgrade.use(player,offx,offz,offy);
+            shooterUpgrade.use(player,-offx,offz,offy);
             shooted = true;
         }
         else if (upgrades.get(SimplePlanesUpgrades.LAUNCHER.getId()) instanceof LauncherUpgrade launcherUpgrade && timer(10)) {
@@ -339,20 +337,17 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
                 offz = -1.35;
                 offy = 1.3;
             }
-            launcherUpgrade.use(player,offx,offz,offy, true);
-            launcherUpgrade.use(player,offx,offz,offy, false);
+            launcherUpgrade.use(player,offx,offz,offy);
+            launcherUpgrade.use(player,-offx,offz,offy);
             shooted = true;
         }
-        else if (upgrades.get(SimplePlanesUpgrades.MINI_SHOOTER.getId()) instanceof MinigunUpgrade miniUpgrade) {
-            miniUpgrade.use(player);
-        }
+
     }
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
         Entity entity = source.getDirectEntity();
-        if (entity == getControllingPassenger() && entity instanceof Player player) {
-            pew(player);
+        if (entity == getControllingPassenger() && entity instanceof Player) {
             return false;
         }
 
@@ -389,8 +384,8 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
             kill();
 
         } else if (getOnGround() && getHealth() <= 0) {
+            explode();
             kill();
-
         }
         return true;
     }
@@ -419,51 +414,31 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
     }
 
     public void makeEffect(double offx, double offz, double offy, int effect) {
-        if (isPowered() && engineUpgrade instanceof FurnaceEngineUpgrade) {
-            double aim = Math.toRadians(this.getRotationVector().y * -1);
-            Vec3 p = this.position();
-            double fx = Math.sin(aim);
-            double fz = Math.cos(aim);
-            double sz = fx * -1;
-            Vec3 lp = new Vec3(p.x + (fz * offx) + (fx * offz), 0.0D, p.z + (sz * offx) + (fz * offz));
-            switch (effect) {
-                case 1 -> this.level.addParticle(ParticleTypes.POOF, lp.x, p.y + offy, lp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
-                case 2 -> this.level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE, lp.x, p.y + offy, lp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
-                default -> this.level.addParticle(ParticleTypes.SMOKE, lp.x, p.y + offy, lp.z, 0 - (fx * 0.05), 0, 0 - (fz * 0.05));
-            }
+        Vector3f transpos = transformPos(new Vector3f((float) offx, (float) offy,(float) offz));
+        switch (effect) {
+            case 1 -> this.level.addParticle(ParticleTypes.POOF,
+                    getX() + transpos.x(), getY() + transpos.y(), getZ() + transpos.z(),
+                    0,0,0);
+            case 2 -> this.level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE,
+                    getX() + transpos.x(), getY() + transpos.y(), getZ() + transpos.z(),
+                    0,0,0);
+            case 3 -> this.level.addParticle(ParticleTypes.LARGE_SMOKE,
+                    getX() + transpos.x(), getY() + transpos.y(), getZ() + transpos.z(),
+                    0,0,0);
+            default -> this.level.addParticle(ParticleTypes.SMOKE,
+                    getX() + transpos.x(), getY() + transpos.y(), getZ() + transpos.z(),
+                    0,0,0);
         }
+
     }
 
-    public void debugSmoke() {
-        float pitch = this.getRotationVector().x;
-        float yaw = this.getRotationVector().y;
-        float roll = rotationRoll;
-        float distance = 0;
-
-//# calculate components of a perpendicular vector (relative to x-axis)
-        double cx = Math.cos((pitch * 3.14) / 180) * Math.sin((yaw * 3.14) / 180) * distance;
-        double cy = Math.sin((pitch * 3.14) / 180) * distance;
-        double cz = Math.cos((pitch * 3.14) / 180) * Math.cos((yaw * 3.14) / 180) * distance;
-
-//# calculate components of a perpendicular vector (relative to y-axis)
-        double dx = Math.cos((roll * 3.14) / 180) * Math.sin((yaw * 3.14) / 180) * distance;
-        double dy = Math.sin((roll * 3.14) / 180) * distance;
-        double dz = Math.cos((roll * 3.14) / 180) * Math.cos((yaw * 3.14) / 180) * distance;
-        //double aim = Math.toRadians(this.getRotationVector().y * -1);
-        //Vec3 p = this.position();
-        //double fx = Math.sin(aim);
-        //double fz = Math.cos(aim);
-        //double sz = fx * -1;
-        //Vec3 lp = new Vec3(p.x + (fz * offx) + (fx * offz), 0.0D, p.z + (sz * offx) + (fz * offz));
-        double rotx = this.position().x + cx + dx;
-        double roty = this.position().y + cy + dy;
-        double rotz = this.position().z + cz + dz;
-
-//# print the results
-        this.level.addParticle(ParticleTypes.LARGE_SMOKE, rotx, roty, rotz, 0, 0,
-                0);
-        //this.level.addParticle(ParticleTypes.LARGE_SMOKE, vecrot.x, vecrot.y, vecrot.z-2, 0, 0,
-        //        0);
+    public void debugSmoke(){
+        double offx = 2;
+        double offy = 1.35;
+        double offz = -5;
+        Vector3f transpos = transformPos(new Vector3f((float) offx, (float) offy,(float) offz));
+        //System.out.println(transpos);
+        this.level.addParticle(ParticleTypes.LARGE_SMOKE, getX() + transpos.x(), getY() + transpos.y(), getZ() + transpos.z(), 0, 0, 0);
     }
 
 /*
@@ -509,7 +484,7 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
     @Override
     public void tick() {
         super.tick();
-        debugSmoke();
+        //debugSmoke();
         Entity entity = getControllingPassenger();
         if (moveHeliUpKey.isDown() && entity instanceof Player player) {pew(player);}
         if (Double.isNaN(getDeltaMovement().length())) {

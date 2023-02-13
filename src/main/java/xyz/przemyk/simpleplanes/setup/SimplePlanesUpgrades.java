@@ -18,7 +18,6 @@ import xyz.przemyk.simpleplanes.upgrades.heal.HealingUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.jukebox.JukeboxUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.payload.PayloadUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.seats.SeatsUpgrade;
-import xyz.przemyk.simpleplanes.upgrades.shooter.MinigunUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.shooter.ShooterUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.launcher.LauncherUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.solarpanel.SolarPanelUpgrade;
@@ -64,7 +63,6 @@ public class SimplePlanesUpgrades {
     public static final RegistryObject<UpgradeType> BOOSTER = UPGRADE_TYPES.register("booster", () -> new UpgradeType(BoosterUpgrade::new));
     public static final RegistryObject<UpgradeType> SHOOTER = UPGRADE_TYPES.register("shooter", () -> new UpgradeType(ShooterUpgrade::new));
     public static final RegistryObject<UpgradeType> LAUNCHER = UPGRADE_TYPES.register("launcher", () -> new UpgradeType(LauncherUpgrade::new));
-    public static final RegistryObject<UpgradeType> MINI_SHOOTER = UPGRADE_TYPES.register("mini_shooter", () -> new UpgradeType(MinigunUpgrade::new));
     public static final RegistryObject<UpgradeType> HEALING = UPGRADE_TYPES.register("healing", () -> new UpgradeType(HealingUpgrade::new));
     public static final RegistryObject<UpgradeType> ARMOR = UPGRADE_TYPES.register("armor", () -> new UpgradeType(ArmorUpgrade::new));
     public static final RegistryObject<UpgradeType> SOLAR_PANEL = UPGRADE_TYPES.register("solar_panel", () -> new UpgradeType(SolarPanelUpgrade::new));

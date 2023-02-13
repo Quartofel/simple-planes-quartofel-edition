@@ -2,6 +2,8 @@ package xyz.przemyk.simpleplanes.upgrades;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -19,9 +21,13 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import xyz.przemyk.simpleplanes.client.gui.PlaneInventoryScreen;
 import xyz.przemyk.simpleplanes.client.render.UpgradesModels;
 import xyz.przemyk.simpleplanes.entities.PlaneEntity;
+import xyz.przemyk.simpleplanes.misc.MathUtil;
 import xyz.przemyk.simpleplanes.setup.SimplePlanesEntities;
 
 import java.util.function.Function;
+
+import static xyz.przemyk.simpleplanes.misc.MathUtil.toEulerAngles;
+import static xyz.przemyk.simpleplanes.misc.MathUtil.toQuaternion;
 
 @SuppressWarnings("UnstableApiUsage")
 public abstract class Upgrade extends CapabilityProvider<Upgrade> implements INBTSerializable<CompoundTag> {
@@ -30,7 +36,7 @@ public abstract class Upgrade extends CapabilityProvider<Upgrade> implements INB
     protected final PlaneEntity planeEntity;
     public boolean updateClient = false;
     public boolean removed = false;
-
+    public Quaternion Q_Client = new Quaternion(Quaternion.ONE);
     public PlaneEntity getPlaneEntity() {
         return planeEntity;
     }
@@ -80,6 +86,7 @@ public abstract class Upgrade extends CapabilityProvider<Upgrade> implements INB
      * @param buffer Render type buffer
      * @param packedLight packed light
      */
+
     public void render(PoseStack matrixStack, MultiBufferSource buffer, int packedLight, float partialTicks) {
         EntityType<?> entityType = planeEntity.getType();
         UpgradesModels.ModelEntry modelEntry = UpgradesModels.MODEL_ENTRIES.get(getType());
@@ -94,6 +101,7 @@ public abstract class Upgrade extends CapabilityProvider<Upgrade> implements INB
             modelEntry.heli().renderToBuffer(matrixStack, vertexconsumer, packedLight, OverlayTexture.NO_OVERLAY, 1.0f, 1.0f, 1.0f, 1.0f);
         }
     }
+
 
     @Override
     public CompoundTag serializeNBT() {

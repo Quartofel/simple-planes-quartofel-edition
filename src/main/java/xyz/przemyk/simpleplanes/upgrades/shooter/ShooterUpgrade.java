@@ -3,7 +3,6 @@ package xyz.przemyk.simpleplanes.upgrades.shooter;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
@@ -39,32 +38,20 @@ public class ShooterUpgrade extends Upgrade {
         super(SimplePlanesUpgrades.SHOOTER.get(), planeEntity);
     }
 
-    public void use(Player player, double offx, double offz, double offy, boolean left) {
+    public void use(Player player, double offx, double offz, double offy) {
         Vector3f motion1 = planeEntity.transformPos(new Vector3f(0, -0.25f, (float) (1 + planeEntity.getDeltaMovement().length())));
         Vec3 motion = new Vec3(motion1);
         Level level = player.level;
-
-        double aim = Math.toRadians(planeEntity.getRotationVector().y * -1);
-        Vec3 p = planeEntity.position();
-        double fx = Math.sin(aim);
-        double fz = Math.cos(aim);
-        double sz = fx * -1;
-        Vec3 lp = new Vec3(p.x + (fz * offx) + (fx * offz), 0.0D, p.z + (sz * offx) + (fz * offz));
-        Vec3 rp = new Vec3(p.x - (fz * offx) + (fx * offz), 0.0D, p.z - (sz * offx) + (fz * offz));
 
         updateClient();
 
         ItemStack itemStack = itemStackHandler.getStackInSlot(0);
         Item item = itemStack.getItem();
 
-        if(left) {
-            ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompat.shooterBehaviour("highcal", item, itemStackHandler, level, player, motion, lp.x, p.y + offy, lp.z));
-        }
-        else {
-            ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompat.shooterBehaviour("highcal", item, itemStackHandler, level, player, motion, rp.x, p.y + offy, rp.z));
-        }
-
-
+        //rotating offset position around the planeEntity
+        Vector3f transpos = planeEntity.transformPos(new Vector3f((float) offx, (float) offy,(float) offz));
+        ModList.get().getModContainerById("cgm").ifPresent(cgm -> MrCrayfishGunCompat.shooterBehaviour("highcal", item, itemStackHandler, level, player, motion,
+                planeEntity.getX() + transpos.x(), planeEntity.getY() + transpos.y(), planeEntity.getZ() + transpos.z()));
     }
 
     @Override
