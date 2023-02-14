@@ -11,6 +11,7 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import xyz.przemyk.simpleplanes.SimplePlanesMod;
+import xyz.przemyk.simpleplanes.upgrades.autobow.HeliAutobowModel;
 import xyz.przemyk.simpleplanes.client.render.ParachuteRenderer;
 import xyz.przemyk.simpleplanes.client.render.PlaneRenderer;
 import xyz.przemyk.simpleplanes.client.render.UpgradesModels;
@@ -40,6 +41,7 @@ import xyz.przemyk.simpleplanes.upgrades.seats.*;
 import xyz.przemyk.simpleplanes.upgrades.launcher.LauncherModel;
 import xyz.przemyk.simpleplanes.upgrades.launcher.LargeLauncherModel;
 import xyz.przemyk.simpleplanes.upgrades.launcher.HeliLauncherModel;
+import xyz.przemyk.simpleplanes.upgrades.autobow.HeliAutobowModel;
 import xyz.przemyk.simpleplanes.upgrades.shooter.HeliShooterModel;
 import xyz.przemyk.simpleplanes.upgrades.shooter.LargeShooterModel;
 import xyz.przemyk.simpleplanes.upgrades.shooter.ShooterModel;
@@ -85,6 +87,10 @@ public class PlanesModelLayers {
     public static final ModelLayerLocation LAUNCHER = new ModelLayerLocation(new ResourceLocation(SimplePlanesMod.MODID, "launcher"), "main");
     public static final ModelLayerLocation LARGE_LAUNCHER = new ModelLayerLocation(new ResourceLocation(SimplePlanesMod.MODID, "launcher"), "large");
     public static final ModelLayerLocation HELI_LAUNCHER = new ModelLayerLocation(new ResourceLocation(SimplePlanesMod.MODID, "launcher"), "heli");
+
+    public static final ModelLayerLocation AUTOBOW = new ModelLayerLocation(new ResourceLocation(SimplePlanesMod.MODID, "autobow"), "main");
+    public static final ModelLayerLocation LARGE_AUTOBOW = new ModelLayerLocation(new ResourceLocation(SimplePlanesMod.MODID, "autobow"), "large");
+    public static final ModelLayerLocation HELI_AUTOBOW = new ModelLayerLocation(new ResourceLocation(SimplePlanesMod.MODID, "autobow"), "heli");
 
     public static final ModelLayerLocation FLOATING = new ModelLayerLocation(new ResourceLocation(SimplePlanesMod.MODID, "floating"), "main");
     public static final ModelLayerLocation LARGE_FLOATING = new ModelLayerLocation(new ResourceLocation(SimplePlanesMod.MODID, "floating"), "large");
@@ -143,6 +149,10 @@ public class PlanesModelLayers {
         event.registerLayerDefinition(LAUNCHER, LauncherModel::createBodyLayer);
         event.registerLayerDefinition(LARGE_LAUNCHER, LargeLauncherModel::createBodyLayer);
         event.registerLayerDefinition(HELI_LAUNCHER, HeliLauncherModel::createBodyLayer);
+
+        //event.registerLayerDefinition(AUTOBOW, AutobowModel::createBodyLayer);
+        //event.registerLayerDefinition(LARGE_AUTOBOW, LargeAutobowModel::createBodyLayer);
+        event.registerLayerDefinition(HELI_AUTOBOW, HeliAutobowModel::createBodyLayer);
 
         event.registerLayerDefinition(FLOATING, FloatingModel::createBodyLayer);
         event.registerLayerDefinition(LARGE_FLOATING, LargeFloatingModel::createBodyLayer);
@@ -207,6 +217,11 @@ public class PlanesModelLayers {
                 new LauncherModel(entityModelSet.bakeLayer(SHOOTER)), SimplePlanesMod.texture("shooter_heli.png"),
                 new LargeLauncherModel(entityModelSet.bakeLayer(LARGE_SHOOTER)), SimplePlanesMod.texture("shooter_heli.png"),
                 new HeliLauncherModel(entityModelSet.bakeLayer(HELI_LAUNCHER)), SimplePlanesMod.texture("launcher_heli.png")));
+
+        UpgradesModels.MODEL_ENTRIES.put(SimplePlanesUpgrades.AUTOBOW.get(), new UpgradesModels.ModelEntry(
+                new LauncherModel(entityModelSet.bakeLayer(SHOOTER)), SimplePlanesMod.texture("shooter_heli.png"),
+                new LargeLauncherModel(entityModelSet.bakeLayer(LARGE_SHOOTER)), SimplePlanesMod.texture("shooter_heli.png"),
+                new HeliAutobowModel(entityModelSet.bakeLayer(HELI_AUTOBOW)), SimplePlanesMod.texture("autobow_heli.png")));
 
         //UpgradesModels.MODEL_ENTRIES.put(SimplePlanesUpgrades.MINI_SHOOTER.get(), new UpgradesModels.ModelEntry(
         //        new LauncherModel(entityModelSet.bakeLayer(SHOOTER)), SimplePlanesMod.texture("shooter.png"),

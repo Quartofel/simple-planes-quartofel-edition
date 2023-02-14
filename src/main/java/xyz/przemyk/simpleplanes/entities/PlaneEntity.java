@@ -48,6 +48,7 @@ import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistries;
 import xyz.przemyk.simpleplanes.SimplePlanesMod;
+import xyz.przemyk.simpleplanes.upgrades.autobow.AutobowUpgrade;
 import xyz.przemyk.simpleplanes.client.PlaneSound;
 import xyz.przemyk.simpleplanes.container.RemoveUpgradesContainer;
 import xyz.przemyk.simpleplanes.misc.MathUtil;
@@ -60,6 +61,7 @@ import xyz.przemyk.simpleplanes.upgrades.booster.BoosterUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.engines.EngineUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.launcher.LauncherUpgrade;
 import xyz.przemyk.simpleplanes.upgrades.shooter.ShooterUpgrade;
+import xyz.przemyk.simpleplanes.upgrades.autobow.AutobowUpgrade;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -342,6 +344,31 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
             }
             launcherUpgrade.use(player,offx,offz,offy);
             launcherUpgrade.use(player,-offx,offz,offy);
+            shooted = true;
+        }
+        else if (upgrades.get(SimplePlanesUpgrades.AUTOBOW.getId()) instanceof AutobowUpgrade autobowUpgrade && timer(5)) {
+            if (timer(10) && shooted) {
+                shooted = false;
+                return;
+            }
+
+            if(this.getType() == SimplePlanesEntities.PLANE.get()){
+                offx = 0.1;
+                offz = 1;
+                offy = 1.1;
+            }
+            else if(this.getType() == SimplePlanesEntities.LARGE_PLANE.get()){
+                offx = 0;
+                offz = 0;
+                offy = 0;
+            }
+            else{
+                offx = 1.32;
+                offz = -1.35;
+                offy = 1.3;
+            }
+            autobowUpgrade.use(player,offx,offz,offy);
+            autobowUpgrade.use(player,-offx,offz,offy);
             shooted = true;
         }
 
