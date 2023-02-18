@@ -5,7 +5,8 @@ import com.mojang.math.Vector3f;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.Arrow;
@@ -28,11 +29,9 @@ import xyz.przemyk.simpleplanes.client.gui.PlaneInventoryScreen;
 import xyz.przemyk.simpleplanes.entities.PlaneEntity;
 import xyz.przemyk.simpleplanes.setup.SimplePlanesUpgrades;
 import xyz.przemyk.simpleplanes.upgrades.Upgrade;
-
 import java.util.function.Function;
 
-import static net.minecraft.sounds.SoundEvents.CROSSBOW_SHOOT;
-import static net.minecraft.sounds.SoundSource.NEUTRAL;
+import static net.minecraft.Util.getRandom;
 
 public class AutobowUpgrade extends Upgrade {
 
@@ -88,7 +87,10 @@ public class AutobowUpgrade extends Upgrade {
             }
             level.addFreshEntity(arrowEntity);
 
-            //level.playSound(player, planeEntity.getX(), planeEntity.getY(), planeEntity.getZ(), CROSSBOW_SHOOT, NEUTRAL, 1, 100);
+
+            level.playSound(player, planeEntity.getX() + transpos.x(), planeEntity.getY() + transpos.y(), planeEntity.getZ() + transpos.z(), SoundEvents.CROSSBOW_SHOOT,SoundSource.PLAYERS, 1.0F, (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
+            level.playLocalSound(planeEntity.getX() + transpos.x(), planeEntity.getY() + transpos.y(), planeEntity.getZ() + transpos.z(), SoundEvents.GENERIC_EXPLODE, SoundSource.PLAYERS, 4.0F, (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F, false);
+            //planeEntity.playSound(SoundEvents.GENERIC_EXPLODE, 1f, 1.0F);
         }
     }
 

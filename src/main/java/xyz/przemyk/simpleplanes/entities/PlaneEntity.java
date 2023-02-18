@@ -495,14 +495,12 @@ public class PlaneEntity extends Entity implements IEntityAdditionalSpawnData {
             return true;
         }
         else {
-            int timepassed = this.tickCount - shootTimer;
-            if(timepassed < delay){
+            if(this.tickCount - shootTimer < delay){
                 return false;
             }
             else {
                 shootTimer = 0;
                 return true;
-
             }
         }
     }
